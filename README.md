@@ -66,7 +66,12 @@ Using a pre-built image on [Docker Hub](https://hub.docker.com/repository/docker
 ### To enter interactive stata
 
 ```
-docker run -it --rm -v stata.lic.17:/usr/local/stata17/stata.lic -v $(pwd):/code dataeditors/${MYIMG} 
+docker run -it --rm \
+  -v $(pwd)/stata.lic.17:/usr/local/stata17/stata.lic \
+  -v $(pwd)/code:/code \
+  -v $(pwd)/data:/data \
+  -v $(pwd)/results:/results \
+  dataeditors/${MYIMG} 
 ```
 
 ### Running a program
