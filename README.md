@@ -5,6 +5,9 @@
 This Docker image is meant to isolate and stabilize that environment, and should be portable across
 multiple operating system, as long as [Docker](https://docker.com) is available.
 
+> To learn more about the use of containers for research reproducibility, see [Carpentries' docker-introduction](https://carpentries-incubator.github.io/docker-introduction/index.html). For commercial services running containers, see [codeocean.com](https://codeocean.com), [gigantum](https://gigantum.com/), or any of the cloud service providers. For an academic project using containers, see [Whole Tale](https://wholetale.org/).
+
+
 ## Build
 
 ### Adjust the needed packages
@@ -20,7 +23,7 @@ docker build  .
 
 ## Publish the image 
 
-The resulting docker image can be uploaded to [Docker Hub](https://hub.docker.com/), if desired, Find the image ID, this will also have been the output of the `docker build` command.
+The resulting docker image can be uploaded to [Docker Hub](https://hub.docker.com/), if desired, or any other of the container registries. Find the image ID, this will also have been the output of the `docker build` command.
 
 ```
 ...
@@ -54,6 +57,10 @@ docker tag $IMAGEID $MYHUBID/${MYIMG}:$TAG
 docker tag $IMAGEID $MYHUBID/${MYIMG}:latest
 docker push $MYHUBID/${MYIMG}
 ```
+
+We can browse the provided images at [https://hub.docker.com/orgs/dataeditors/repositories](https://hub.docker.com/orgs/dataeditors/repositories):
+
+![Screenshot of repository for dataeditors](assets/docker-hub-dataeditors.png)
 
 ## Using the image
 
