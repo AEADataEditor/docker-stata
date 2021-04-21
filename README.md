@@ -47,7 +47,7 @@ Now you can upload it. Set the `TAG` and `IMAGEID` accordingly.
 
 ```
 IMAGEID=52e8f83a14f8
-VERSION=16
+VERSION=17
 TAG=$(date +%F)
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
@@ -71,7 +71,7 @@ Using a pre-built image on [Docker Hub](https://hub.docker.com/repository/docker
 ### To enter interactive stata
 
 ```
-VERSION=16
+VERSION=17
 docker run -it --rm \
   -v $(pwd)/stata.lic.${VERSION}:/usr/local/stata${VERSION}/stata.lic \
   -v $(pwd)/code:/code \
@@ -86,7 +86,7 @@ The docker image has a `ENTRYPOINT` defined, which means it will act as if you w
 
 
 ```
-VERSION=16
+VERSION=17
 docker run -it --rm \
   -v $(pwd)/stata.lic.${VERSION}:/usr/local/stata${VERSION}/stata.lic \
   -v $(pwd)/code:/code \
@@ -107,10 +107,10 @@ global results "${basedir}results"
 ### Using the container to build a project-specific docker image
 
 - Adjust the `setup.do` file - list all packages you want installed permanently. 
-- Remember to have the `stata.lic.16` file available
+- Remember to have the `stata.lic.17` file available
 - Start your Dockerfile with
 ```
-FROM dataeditors/stata16:2021-04-21
+FROM dataeditors/stata17:2021-04-21
 # this makes the copy work
 COPY stata.lic.${VERSION} /root/stata.lic
 RUN mv $HOME/stata.lic /usr/local/stata${VERSION}/ 
