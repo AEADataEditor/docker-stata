@@ -7,12 +7,10 @@ multiple operating system, as long as [Docker](https://docker.com) is available.
 
 > To learn more about the use of containers for research reproducibility, see [Carpentries' docker-introduction](https://carpentries-incubator.github.io/docker-introduction/index.html). For commercial services running containers, see [codeocean.com](https://codeocean.com), [gigantum](https://gigantum.com/), or any of the cloud service providers. For an academic project using containers, see [Whole Tale](https://wholetale.org/).
 
+> NOTE: The image created by these instructions contains binary code that is &copy; Stata. Permission was granted by Stata to Lars Vilhuber to post these images, without the license. A valid license is necessary to build and use these images. 
+
 
 ## Build
-
-### Adjust the needed packages
-
-See the [setup.do](setup.do) file, and update accordingly.
 
 
 ### Build the image
@@ -49,7 +47,7 @@ Now you can upload it. Set the `TAG` and `IMAGEID` accordingly.
 
 ```
 IMAGEID=52e8f83a14f8
-VERSION=17
+VERSION=16
 TAG=$(date +%F)
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
@@ -73,8 +71,9 @@ Using a pre-built image on [Docker Hub](https://hub.docker.com/repository/docker
 ### To enter interactive stata
 
 ```
+VERSION=16
 docker run -it --rm \
-  -v $(pwd)/stata.lic.17:/usr/local/stata17/stata.lic \
+  -v $(pwd)/stata.lic.${VERSION}:/usr/local/stata${VERSION}/stata.lic \
   -v $(pwd)/code:/code \
   -v $(pwd)/data:/data \
   -v $(pwd)/results:/results \
@@ -87,8 +86,9 @@ The docker image has a `ENTRYPOINT` defined, which means it will act as if you w
 
 
 ```
+VERSION=16
 docker run -it --rm \
-  -v $(pwd)/stata.lic.17:/usr/local/stata17/stata.lic \
+  -v $(pwd)/stata.lic.${VERSION}:/usr/local/stata${VERSION}/stata.lic \
   -v $(pwd)/code:/code \
   -v $(pwd)/data:/data \
   -v $(pwd)/results:/results \
@@ -107,10 +107,10 @@ global results "${basedir}results"
 ### Using the container to build a project-specific docker image
 
 - Adjust the `setup.do` file - list all packages you want installed permanently. 
-- Remember to have the `stata.lic.17` file available
+- Remember to have the `stata.lic.16` file available
 - Start your Dockerfile with
 ```
-FROM dataeditors/stata17:2021-04-21
+FROM dataeditors/stata16:2021-04-21
 # this makes the copy work
 COPY stata.lic.${VERSION} /root/stata.lic
 RUN mv $HOME/stata.lic /usr/local/stata${VERSION}/ 
