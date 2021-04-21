@@ -1,6 +1,13 @@
+# First stage
+FROM ubuntu:20.04 as install
+ENV VERSION 17
+# cheating for now
+COPY bin-exclude/stata-installed-${VERSION}.tgz /root/stata.tgz
+RUN cd / && tar xzf $HOME/stata.tgz \
+    && rm $HOME/stata.tgz 
+
+# Final build
 FROM ubuntu:20.04
-
-
 RUN apt-get update \
     && apt-get install -y locales libncurses5 \
     && apt-get upgrade -y \
@@ -9,12 +16,10 @@ RUN apt-get update \
 ENV LANG en_US.utf8
 ENV VERSION 17
 
-# cheating for now
-COPY bin-exclude/stata-installed-${VERSION}.tgz /root/
-COPY stata.lic.${VERSION} /root/stata.lic
-RUN cd / && tar xzf $HOME/stata-installed-${VERSION}.tgz \
-    && mv $HOME/stata.lic /usr/local/stata${VERSION}/ \
-    && ln -s /usr/local/stata${VERSION} /usr/local/stata \
+# copying from first stage
+COPY --from=install /usr/local/stata17/ /usr/local/stata17/
+COPY stata.lic.${VERSION} /usr/local/stata${VERSION}/stata.lic
+RUN ln -s /usr/local/stata${VERSION} /usr/local/stata \
     && echo "export PATH=/usr/local/stata:${PATH}" >> /root/.bashrc
 ENV PATH "$PATH:/usr/local/stata" 
 WORKDIR /code
