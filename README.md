@@ -9,19 +9,31 @@ multiple operating system, as long as [Docker](https://docker.com) is available.
 
 > NOTE: The image created by these instructions contains binary code that is &copy; Stata. Permission was granted by Stata to Lars Vilhuber to post these images, without the license. A valid license is necessary to build and use these images. 
 
+## Dockerfile
+
+The [Dockerfile](Dockerfile) contains the build instructions. A few things of note:
+
+
 
 ## Build
 
+### Set up a few things
+
+Set the `TAG` and `IMAGEID` accordingly. `VERSION` should be the Stata version.
+
+```
+VERSION=14
+TAG=$(date +%F)
+MYHUBID=dataeditors
+MYIMG=stata${VERSION}
+```
 
 ### Build the image
 
 ```
-docker build  .
+DOCKERBUILDKIT=1 docker build  . -t $MYHUBID/${MYIMG}:$TAG
 ```
 
-## Publish the image 
-
-The resulting docker image can be uploaded to [Docker Hub](https://hub.docker.com/), if desired, or any other of the container registries. Find the image ID, this will also have been the output of the `docker build` command.
 
 ```
 ...
@@ -30,7 +42,7 @@ Removing intermediate container cb12e70b0154
 Successfully built 52e8f83a14f8
 ```
 
-or list your images:
+List your images:
 
 ```
 docker images 
@@ -43,16 +55,12 @@ REPOSITORY          TAG                 IMAGE ID            CREATED             
 <none>              <none>              a919483dbe22        34 minutes ago      107MB
 ```
 
-Now you can upload it. Set the `TAG` and `IMAGEID` accordingly.
+## Publish the image 
+
+The resulting docker image can be uploaded to [Docker Hub](https://hub.docker.com/), if desired, or any other of the container registries. 
+
 
 ```
-IMAGEID=52e8f83a14f8
-VERSION=14
-TAG=$(date +%F)
-MYHUBID=dataeditors
-MYIMG=stata${VERSION}
-docker tag $IMAGEID $MYHUBID/${MYIMG}:$TAG
-docker tag $IMAGEID $MYHUBID/${MYIMG}:latest
 docker push $MYHUBID/${MYIMG}
 ```
 
@@ -77,7 +85,7 @@ docker run -it --rm \
   -v $(pwd)/code:/code \
   -v $(pwd)/data:/data \
   -v $(pwd)/results:/results \
-  dataeditors/${MYIMG} 
+  dataeditors/${MYIMG}:${TAG}
 ```
 
 ### Running a program
