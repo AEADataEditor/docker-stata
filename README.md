@@ -30,8 +30,10 @@ MYIMG=stata${VERSION}
 
 ### Build the image
 
+The Dockerfile relies on BuildKit syntax, for passing the license information.
+
 ```
-DOCKERBUILDKIT=1 docker build  . -t $MYHUBID/${MYIMG}:$TAG
+DOCKER_BUILDKIT=1 docker build  . --secret id=statalic,src=stata.lic.${VERSION} -t $MYHUBID/${MYIMG}:$TAG
 ```
 
 

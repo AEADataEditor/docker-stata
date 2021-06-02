@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.2
 # First stage
 FROM ubuntu:20.04 as install
 # cheating for now
@@ -5,11 +6,10 @@ ENV VERSION 17
 COPY bin-exclude/stata-installed-${VERSION}.tgz /root/stata.tgz
 RUN cd / && tar xzf $HOME/stata.tgz \
     && rm $HOME/stata.tgz 
-ADD stata.lic.${VERSION} /usr/local/stata${VERSION}/stata.lic
 # do a small install and update
 RUN apt-get update \
     && apt-get install -y locales libncurses5 
-RUN /usr/local/stata${VERSION}/stata update all 
+RUN --mount=type=secret,id=statalic,dst=/usr/local/stata${VERSION}/stata.lic /usr/local/stata${VERSION}/stata update all 
 
 # Final build
 FROM ubuntu:20.04
