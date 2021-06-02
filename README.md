@@ -31,7 +31,7 @@ MYIMG=stata${VERSION}
 ### Build the image
 
 ```
-DOCKERBUILDKIT=1 docker build  . -t $MYHUBID/${MYIMG}:$TAG
+DOCKER_BUILDKIT=1 docker build  . -t $MYHUBID/${MYIMG}:$TAG
 ```
 
 
