@@ -1,13 +1,14 @@
 # First stage
 FROM ubuntu:20.04 as install
-ENV VERSION 17
-RUN apt-get update \
-    && apt-get install -y locales libncurses5 
 # cheating for now
+ENV VERSION 17
 COPY bin-exclude/stata-installed-${VERSION}.tgz /root/stata.tgz
 RUN cd / && tar xzf $HOME/stata.tgz \
     && rm $HOME/stata.tgz 
 ADD stata.lic.${VERSION} /usr/local/stata${VERSION}/stata.lic
+# do a small install and update
+RUN apt-get update \
+    && apt-get install -y locales libncurses5 
 RUN /usr/local/stata${VERSION}/stata update all 
 
 # Final build
