@@ -1,21 +1,11 @@
 # First stage
 FROM ubuntu:20.04 as install
-RUN apt-get update \
-    && apt-get install -y locales libncurses5 
 # cheating for now
 ENV VERSION 14
-ENV libpng http://ppa.launchpad.net/linuxuprising/libpng12/ubuntu/pool/main/libp/libpng/libpng12-0_1.2.54-1ubuntu1.1+1~ppa0~focal_amd64.deb
-RUN apt-get update \
-    && apt-get install -y wget \
-    && wget -O libpng.deb "${libpng}" \
-    && dpkg --install libpng.deb \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -f libpng.deb
 COPY bin-exclude/stata-installed-${VERSION}.tgz /root/stata.tgz
 RUN cd / && tar xzf $HOME/stata.tgz \
     && rm $HOME/stata.tgz 
-ADD stata.lic.${VERSION} /usr/local/stata${VERSION}/stata.lic
-RUN /usr/local/stata${VERSION}/stata update all 
+# No need to update old versions
 
 # Final build
 FROM ubuntu:20.04
