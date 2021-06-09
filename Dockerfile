@@ -14,8 +14,14 @@ RUN --mount=type=secret,id=statalic,dst=/usr/local/stata${VERSION}/stata.lic /us
 # Final build
 FROM ubuntu:20.04
 RUN apt-get update \
-    && apt-get upgrade -y  \
-    && apt-get install -y locales libncurses5 \
+    && DEBIAN_FRONTEND=noninteractive apt-get upgrade -y  \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+         locales \
+         libncurses5 \
+         libfontconfig1 \
+         git \
+         nano \
+         unzip \
     && rm -rf /var/lib/apt/lists/* \
     && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 # Create a non-root user
