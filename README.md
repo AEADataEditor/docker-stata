@@ -121,18 +121,26 @@ global results "${basedir}results"
 - Start your Dockerfile with (adjust the tag)
 
 ```
+# syntax=docker/dockerfile:1.2
 FROM dataeditors/stata17:2021-04-21
-# this makes the copy work
-COPY stata.lic.${VERSION} /root/stata.lic
-RUN mv $HOME/stata.lic /usr/local/stata${VERSION}/ 
 # this runs your code 
 COPY code/* /code/
 COPY data/* /data/
-RUN stata-mp do /code/main.do
+RUN --mount=type=secret,id=statalic,dst=/usr/local/stata${VERSION}/stata.lic /usr/local/stata${VERSION}/stata-mp do /code/setup.do
+
+USER statauser:stata
+# run the master file
+ENTRYPOINT ["stata-mp","/code/master.do"]
 ```
 
+build, and then run this Docker image with
 
-
+```
+docker run --secret id=statalic,src=stata.lic.${VERSION} \
+  -v $(pwd)/results:/results  \
+  larsvilhuber/greatpaper:2021-06-08
+```
+and the results of running the code (in `code`) on the data (in `data`) will show up in the `results` folder which is local to your workstation.
 
 ## NOTE
 
