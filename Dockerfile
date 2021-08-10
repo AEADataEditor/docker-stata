@@ -1,7 +1,7 @@
 # First stage
 FROM ubuntu:20.04 as install
 # cheating for now
-ENV VERSION 13
+ENV VERSION 12
 COPY bin-exclude/stata-installed-${VERSION}.tgz /root/stata.tgz
 RUN cd / && tar xzf $HOME/stata.tgz \
     && rm $HOME/stata.tgz 
@@ -30,7 +30,7 @@ RUN groupadd -g 1000 stata \
 
 # Set a few more things
 ENV LANG en_US.utf8
-ENV VERSION 13
+ENV VERSION 12
 
 # copying from first stage
 COPY --from=install /usr/local/stata${VERSION}/ /usr/local/stata${VERSION}/
