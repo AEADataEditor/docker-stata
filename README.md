@@ -78,10 +78,19 @@ Using a pre-built image on [Docker Hub](https://hub.docker.com/repository/docker
 
 > NOTE: We are using a working directory of "/code" here - check the [Dockerfile](Dockerfile) for the precise location.
 
-### To enter interactive stata
+
+For all the subsequent `docker run` commands, we will use similar environment variables:
 
 ```
 VERSION=17
+TAG=2021-06-09
+MYHUBID=dataeditors
+MYIMG=stata${VERSION}
+```
+
+### To enter interactive stata
+
+```
 docker run -it --rm \
   -v $(pwd)/stata.lic.${VERSION}:/usr/local/stata${VERSION}/stata.lic \
   -v $(pwd)/code:/code \
@@ -96,7 +105,6 @@ The docker image has a `ENTRYPOINT` defined, which means it will act as if you w
 
 
 ```
-VERSION=17
 docker run -it --rm \
   -v $(pwd)/stata.lic.${VERSION}:/usr/local/stata${VERSION}/stata.lic \
   -v $(pwd)/code:/code \
