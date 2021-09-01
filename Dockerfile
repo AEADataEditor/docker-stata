@@ -9,14 +9,6 @@ RUN cd / && tar xzf $HOME/stata.tgz \
     && rm $HOME/stata.tgz 
 # make sure we don't accidentally copy in the license
 RUN test -f /usr/local/stata/stata.lic && rm /usr/local/stata/stata.lic || echo "Not found"
-# do a small install and update
-# but only if forced on the build command line
-# ensure that you call "docker build" with "--build-arg CACHEBUST=$(date +%s)"
-# Source: https://github.com/moby/moby/issues/1996#issuecomment-185872769
-ARG CACHEBUST=1
-RUN apt-get update \
-    && apt-get install -y locales libncurses5 
-RUN --mount=type=secret,id=statalic,dst=/usr/local/stata/stata.lic /usr/local/stata/stata update all 
 
 # Final build
 FROM ubuntu:20.04
