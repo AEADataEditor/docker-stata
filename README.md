@@ -31,9 +31,21 @@ MYIMG=stata${VERSION}
 ### Build the image
 
 The Dockerfile relies on BuildKit syntax, for passing the license information.
+Use the following if you just want to rebuild the Docker image (will re-use key cached information):
 
 ```
-DOCKER_BUILDKIT=1 docker build  . --secret id=statalic,src=stata.lic.${VERSION} -t $MYHUBID/${MYIMG}:$TAG
+DOCKER_BUILDKIT=1 docker build  . \
+  --secret id=statalic,src=stata.lic.${VERSION} \
+  -t $MYHUBID/${MYIMG}:$TAG
+```
+
+or, if updating Stata, use the following, which will force an update through Stata:
+
+```
+DOCKER_BUILDKIT=1 docker build  . \
+  --secret id=statalic,src=stata.lic.${VERSION} \
+  --build-arg CACHEBUST=$(date +%s) \
+  -t $MYHUBID/${MYIMG}:$TAG
 ```
 
 
@@ -92,7 +104,7 @@ MYIMG=stata${VERSION}
 
 ```
 docker run -it --rm \
-  -v $(pwd)/stata.lic.${VERSION}:/usr/local/stata${VERSION}/stata.lic \
+  -v $(pwd)/stata.lic.${VERSION}:/usr/local/stata/stata.lic \
   -v $(pwd)/code:/code \
   -v $(pwd)/data:/data \
   -v $(pwd)/results:/results \
@@ -106,7 +118,7 @@ The docker image has a `ENTRYPOINT` defined, which means it will act as if you w
 
 ```
 docker run -it --rm \
-  -v $(pwd)/stata.lic.${VERSION}:/usr/local/stata${VERSION}/stata.lic \
+  -v $(pwd)/stata.lic.${VERSION}:/usr/local/stata/stata.lic \
   -v $(pwd)/code:/code \
   -v $(pwd)/data:/data \
   -v $(pwd)/results:/results \
@@ -130,11 +142,11 @@ global results "${basedir}results"
 
 ```
 # syntax=docker/dockerfile:1.2
-FROM dataeditors/stata17:2021-04-21
+FROM dataeditors/stata17:2021-06-09
 # this runs your code 
 COPY code/* /code/
 COPY data/* /data/
-RUN --mount=type=secret,id=statalic,dst=/usr/local/stata${VERSION}/stata.lic /usr/local/stata${VERSION}/stata-mp do /code/setup.do
+RUN --mount=type=secret,id=statalic,dst=/usr/local/stata/stata.lic /usr/local/stata/stata-mp do /code/setup.do
 
 USER statauser:stata
 # run the master file

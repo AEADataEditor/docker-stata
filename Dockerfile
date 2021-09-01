@@ -5,11 +5,18 @@ FROM ubuntu:20.04 as install
 ENV VERSION 17
 COPY bin-exclude/stata-installed-${VERSION}.tgz /root/stata.tgz
 RUN cd / && tar xzf $HOME/stata.tgz \
+    && mv /usr/local/stata${VERSION} /usr/local/stata \ 
     && rm $HOME/stata.tgz 
+# make sure we don't accidentally copy in the license
+RUN test -f /usr/local/stata/stata.lic && rm /usr/local/stata/stata.lic || echo "Not found"
 # do a small install and update
+# but only if forced on the build command line
+# ensure that you call "docker build" with "--build-arg CACHEBUST=$(date +%s)"
+# Source: https://github.com/moby/moby/issues/1996#issuecomment-185872769
+ARG CACHEBUST=1
 RUN apt-get update \
     && apt-get install -y locales libncurses5 
-RUN --mount=type=secret,id=statalic,dst=/usr/local/stata${VERSION}/stata.lic /usr/local/stata${VERSION}/stata update all 
+RUN --mount=type=secret,id=statalic,dst=/usr/local/stata/stata.lic /usr/local/stata/stata update all 
 
 # Final build
 FROM ubuntu:20.04
@@ -32,12 +39,10 @@ RUN groupadd -g 1000 stata \
 
 # Set a few more things
 ENV LANG en_US.utf8
-ENV VERSION 17
 
 # copying from first stage
-COPY --from=install /usr/local/stata${VERSION}/ /usr/local/stata${VERSION}/
-RUN ln -s /usr/local/stata${VERSION} /usr/local/stata \
-    && echo "export PATH=/usr/local/stata:${PATH}" >> /root/.bashrc
+COPY --from=install /usr/local/stata/ /usr/local/stata/
+RUN echo "export PATH=/usr/local/stata:${PATH}" >> /root/.bashrc
 ENV PATH "$PATH:/usr/local/stata" 
 
 USER statauser:stata
