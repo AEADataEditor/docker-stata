@@ -116,6 +116,19 @@ docker run -it --rm \
   $MYHUBID/${MYIMG}:${TAG}
 ```
 
+### Aside: Using other container management software
+
+The above builds and runs the container using Docker. While there is a free Community Edition of Docker, others may prefer to use one of the other container management software, such as [Podman](https://podman.io/) or [Singularity](https://sylabs.io/guides/latest/user-guide/). For instance, in Singularity, the following works:
+
+```
+singularity run  \
+  -B ${STATALIC}/stata.lic.${VERSION}:/usr/local/stata/stata.lic \
+  -B $(pwd)/code:/code \
+  -B $(pwd)/data:/data \
+  -B $(pwd)/results:/results \
+  docker://dataeditors/${MYIMG}:${TAG}
+```
+
 ### Running a program
 
 The docker image has a `ENTRYPOINT` defined, which means it will act as if you were running Stata:
