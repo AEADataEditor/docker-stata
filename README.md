@@ -9,6 +9,10 @@ multiple operating system, as long as [Docker](https://docker.com) is available.
 
 > NOTE: The image created by these instructions contains binary code that is &copy; Stata. Permission was granted by Stata to Lars Vilhuber to post these images, without the license. A valid license is necessary to build and use these images. 
 
+## Requirements
+
+You need a Stata license to run the image. If rebuilding, may need Stata license to build the image.
+
 ## Dockerfile
 
 The [Dockerfile](Dockerfile) contains the build instructions. A few things of note:
@@ -47,7 +51,7 @@ DOCKER_BUILDKIT=1 docker build  . \
   --build-arg CACHEBUST=$(date +%s) \
   -t $MYHUBID/${MYIMG}:$TAG
 ```
-
+> NOTE: Updating Stata actually doesn't work.
 
 ```
 ...
@@ -98,17 +102,18 @@ VERSION=17
 TAG=2021-06-09
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
+STATALIC=$HOME/licenses
 ```
 
 ### To enter interactive stata
 
 ```
 docker run -it --rm \
-  -v $(pwd)/stata.lic.${VERSION}:/usr/local/stata/stata.lic \
+  -v ${STATALIC}/stata.lic.${VERSION}:/usr/local/stata/stata.lic \
   -v $(pwd)/code:/code \
   -v $(pwd)/data:/data \
   -v $(pwd)/results:/results \
-  dataeditors/${MYIMG}:${TAG}
+  $MYHUBID/${MYIMG}:${TAG}
 ```
 
 ### Running a program
@@ -118,11 +123,11 @@ The docker image has a `ENTRYPOINT` defined, which means it will act as if you w
 
 ```
 docker run -it --rm \
-  -v $(pwd)/stata.lic.${VERSION}:/usr/local/stata/stata.lic \
+  -v ${STATALIC}/stata.lic.${VERSION}:/usr/local/stata/stata.lic \
   -v $(pwd)/code:/code \
   -v $(pwd)/data:/data \
   -v $(pwd)/results:/results \
-  dataeditors/${MYIMG} -b program.do
+  $MYHUBID/${MYIMG} -b program.do
 ```
 Your program, of course, should reference the `/data` and `/results` directories:
 
