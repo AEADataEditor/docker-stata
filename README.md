@@ -82,13 +82,13 @@ The resulting docker image can be uploaded to [Docker Hub](https://hub.docker.co
 docker push $MYHUBID/${MYIMG}
 ```
 
-We can browse the provided images at [https://hub.docker.com/orgs/dataeditors/repositories](https://hub.docker.com/orgs/dataeditors/repositories):
+We can browse the provided images at [https://hub.docker.com/u/dataeditors](https://hub.docker.com/u/dataeditors):
 
 ![Screenshot of repository for dataeditors](assets/docker-hub-dataeditors.png)
 
 ## Using the image
 
-Using a pre-built image on [Docker Hub](https://hub.docker.com/repository/docker/dataeditors/) to run a program. 
+Using a pre-built image on [Docker Hub](https://hub.docker.com/u/dataeditors) to run a program. 
 
 > NOTE: because Stata is proprietary software, we need to mount a license file. 
 
@@ -103,6 +103,16 @@ TAG=2021-06-09
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
 STATALIC=$HOME/licenses
+```
+
+or
+
+```
+VERSION=17
+TAG=2021-06-09
+MYHUBID=dataeditors
+MYIMG=stata${VERSION}
+STATALIC=$(find $HOME/Dropbox/ -name stata.lic.$VERSION)
 ```
 
 ### To enter interactive stata
@@ -126,7 +136,7 @@ singularity run  \
   -B $(pwd)/code:/code \
   -B $(pwd)/data:/data \
   -B $(pwd)/results:/results \
-  docker://dataeditors/${MYIMG}:${TAG}
+  docker://$MYHUBID/${MYIMG}:${TAG}
 ```
 
 ### Running a program
