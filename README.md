@@ -79,7 +79,7 @@ The resulting docker image can be uploaded to [Docker Hub](https://hub.docker.co
 
 
 ```
-docker push $MYHUBID/${MYIMG}
+docker push $MYHUBID/${MYIMG}:$TAG
 ```
 
 We can browse the provided images at [https://hub.docker.com/u/dataeditors](https://hub.docker.com/u/dataeditors):
@@ -102,7 +102,7 @@ VERSION=17
 TAG=2021-06-09
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
-STATALIC=$HOME/licenses
+STATALIC=$HOME/licenses/stata.lic.$VERSION
 ```
 
 or
@@ -119,7 +119,7 @@ STATALIC=$(find $HOME/Dropbox/ -name stata.lic.$VERSION)
 
 ```
 docker run -it --rm \
-  -v ${STATALIC}/stata.lic.${VERSION}:/usr/local/stata/stata.lic \
+  -v ${STATALIC}:/usr/local/stata/stata.lic \
   -v $(pwd)/code:/code \
   -v $(pwd)/data:/data \
   -v $(pwd)/results:/results \
