@@ -1,0 +1,8 @@
+# Ignore those not relevant for this version
+bin-exclude/stata-installed-12.*
+bin-exclude/stata-installed-13.*
+bin-exclude/stata-installed-14.*
+bin-exclude/stata-installed-15.*
+bin-exclude/stata-installed-16.*
+# bin-exclude/stata-installed-17.*
+bin-exclude/stata-png-fix.tgz

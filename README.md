@@ -9,6 +9,10 @@ multiple operating system, as long as [Docker](https://docker.com) is available.
 
 > NOTE: The image created by these instructions contains binary code that is &copy; Stata. Permission was granted by Stata to Lars Vilhuber to post these images, without the license. A valid license is necessary to build and use these images. 
 
+## Requirements
+
+You need a Stata license to run the image. If rebuilding, may need Stata license to build the image.
+
 ## Dockerfile
 
 The [Dockerfile](Dockerfile) contains the build instructions. A few things of note:
@@ -30,7 +34,7 @@ MYIMG=stata${VERSION}
 
 ### Build the image
 
-The Dockerfile relies on BuildKit syntax, for passing the license information.
+The Dockerfile relies on BuildKit syntax.
 
 ```
 DOCKER_BUILDKIT=1 docker build  . -t $MYHUBID/${MYIMG}:$TAG
@@ -63,31 +67,65 @@ The resulting docker image can be uploaded to [Docker Hub](https://hub.docker.co
 
 
 ```
-docker push $MYHUBID/${MYIMG}
+docker push $MYHUBID/${MYIMG}:$TAG
 ```
 
-We can browse the provided images at [https://hub.docker.com/orgs/dataeditors/repositories](https://hub.docker.com/orgs/dataeditors/repositories):
+We can browse the provided images at [https://hub.docker.com/u/dataeditors](https://hub.docker.com/u/dataeditors):
 
 ![Screenshot of repository for dataeditors](assets/docker-hub-dataeditors.png)
 
 ## Using the image
 
-Using a pre-built image on [Docker Hub](https://hub.docker.com/repository/docker/dataeditors/) to run a program. 
+Using a pre-built image on [Docker Hub](https://hub.docker.com/u/dataeditors) to run a program. 
 
 > NOTE: because Stata is proprietary software, we need to mount a license file. 
 
 > NOTE: We are using a working directory of "/code" here - check the [Dockerfile](Dockerfile) for the precise location.
 
-### To enter interactive stata
+
+For all the subsequent `docker run` commands, we will use similar environment variables:
 
 ```
 VERSION=16
+TAG=2021-07-08
+MYHUBID=dataeditors
+MYIMG=stata${VERSION}
+STATALIC=$HOME/licenses/stata.lic.$VERSION
+```
+
+or
+
+```
+VERSION=16
+TAG=2021-07-08
+MYHUBID=dataeditors
+MYIMG=stata${VERSION}
+STATALIC=$(find $HOME/Dropbox/ -name stata.lic.$VERSION)
+```
+
+### To enter interactive stata
+
+```
+>>>>>>> main
 docker run -it --rm \
-  -v $(pwd)/stata.lic.${VERSION}:/usr/local/stata${VERSION}/stata.lic \
+  -v ${STATALIC}:/usr/local/stata/stata.lic \
   -v $(pwd)/code:/code \
   -v $(pwd)/data:/data \
   -v $(pwd)/results:/results \
-  dataeditors/${MYIMG}:${TAG}
+  $MYHUBID/${MYIMG}:${TAG}
+```
+
+### Aside: Using other container management software
+
+The above builds and runs the container using Docker. While there is a free Community Edition of Docker, others may prefer to use one of the other container management software, such as [Podman](https://podman.io/) or [Singularity](https://sylabs.io/guides/latest/user-guide/). For instance, in Singularity, the following works:
+
+```
+singularity run  \
+  -B ${STATALIC}/stata.lic.${VERSION}:/usr/local/stata/stata.lic \
+  -B $(pwd)/code:/code \
+  -B $(pwd)/data:/data \
+  -B $(pwd)/results:/results \
+  docker://$MYHUBID/${MYIMG}:${TAG}
 ```
 
 ### Running a program
@@ -96,13 +134,12 @@ The docker image has a `ENTRYPOINT` defined, which means it will act as if you w
 
 
 ```
-VERSION=16
 docker run -it --rm \
-  -v $(pwd)/stata.lic.${VERSION}:/usr/local/stata${VERSION}/stata.lic \
+  -v ${STATALIC}/stata.lic.${VERSION}:/usr/local/stata/stata.lic \
   -v $(pwd)/code:/code \
   -v $(pwd)/data:/data \
   -v $(pwd)/results:/results \
-  dataeditors/${MYIMG} -b program.do
+  $MYHUBID/${MYIMG}:${TAG} -b program.do
 ```
 Your program, of course, should reference the `/data` and `/results` directories:
 
@@ -121,11 +158,11 @@ global results "${basedir}results"
 - Start your Dockerfile with
 ```
 # syntax=docker/dockerfile:1.2
-FROM dataeditors/stata16:2021-04-21
+FROM dataeditors/stata16:2021-07-08
 # this runs your code 
 COPY code/* /code/
 COPY data/* /data/
-RUN --mount=type=secret,id=statalic,dst=/usr/local/stata${VERSION}/stata.lic /usr/local/stata${VERSION}/stata-mp do /code/setup.do
+RUN --mount=type=secret,id=statalic,dst=/usr/local/stata/stata.lic /usr/local/stata/stata-mp do /code/setup.do
 
 USER statauser:stata
 # run the master file
