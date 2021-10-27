@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION=17
+VERSION=16
 TAG=$(date +%F)
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}

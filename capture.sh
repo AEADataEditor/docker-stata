@@ -3,7 +3,7 @@
 # this script captures an existing Stata install, updated as necessary
 
 # set locations
-version=17
+version=16
 TARLOC=bin-exclude
 TARBASE=$(pwd)/bin-exclude/stata-installed-$version
 TARFILE=${TARBASE}.tgz
@@ -27,7 +27,7 @@ echo "  $BUILD"
 # sync
 
 printf "%20s " "Syncing."
-rsync -au --exclude='.old' /$INSTALLED/ $BUILD/$INSTALLED/ && echo "Done." || exit 2
+rsync -auv --exclude='.old' /$INSTALLED/ $BUILD/$INSTALLED/ && echo "Done." || exit 2
 
 # remove license
 
