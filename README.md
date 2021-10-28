@@ -106,7 +106,6 @@ STATALIC=$(find $HOME/Dropbox/ -name stata.lic.$VERSION)
 ### To enter interactive stata
 
 ```
->>>>>>> main
 docker run -it --rm \
   -v ${STATALIC}:/usr/local/stata/stata.lic \
   -v $(pwd)/code:/code \
