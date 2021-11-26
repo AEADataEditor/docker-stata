@@ -7,7 +7,7 @@ then
 fi
 
 VERSION=$1
-TAG=2021-10-13
+TAG=2021-11-17
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
 STATALIC=$(find $HOME/Dropbox/ -name stata.lic.$VERSION)
