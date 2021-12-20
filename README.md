@@ -146,7 +146,7 @@ We have also converted the Docker image to a Singularity Image File (SIF),
 sudo singularity build stata${VERSION}.sif docker-daemon://${MYHUBID}/${MYIMG}:${TAG}
 ```
 
-and uploaded the resultant SIF file to the Sylabs.io servers, so it can be used directly in a way similar to DockerHub:
+and uploaded the resultant SIF file to the Sylabs.io servers ([library/vilhuberlars/dataeditors](https://cloud.sylabs.io/library/vilhuberlars/dataeditors)), so it can be used directly in a way similar to DockerHub:
 
 ```
 singularity run  \
