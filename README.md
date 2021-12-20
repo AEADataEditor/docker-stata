@@ -124,6 +124,7 @@ singularity run  \
   -B $(pwd)/code:/code \
   -B $(pwd)/data:/data \
   -B $(pwd)/results:/results \
+  -H $(pwd) \
   docker://$MYHUBID/${MYIMG}:${TAG}
 ```
 
