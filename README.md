@@ -99,7 +99,7 @@ For all the subsequent `docker run` commands, we will use similar environment va
 
 ```
 VERSION=17
-TAG=2021-11-17
+TAG=2021-12-16
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
 STATALIC=$HOME/licenses/stata.lic.$VERSION
@@ -109,7 +109,7 @@ or
 
 ```
 VERSION=17
-TAG=2021-11-17
+TAG=2021-12-16
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
 STATALIC=$(find $HOME/Dropbox/ -name stata.lic.$VERSION | tail -1)
@@ -139,6 +139,27 @@ singularity run  \
   -H $(pwd) \
   docker://$MYHUBID/${MYIMG}:${TAG}
 ```
+
+We have also converted the Docker image to a Singularity Image File (SIF), 
+
+```
+sudo singularity build stata${VERSION}.sif docker-daemon://${MYHUBID}/${MYIMG}:${TAG}
+```
+
+and uploaded the resultant SIF file to the Sylabs.io servers, so it can be used directly in a way similar to DockerHub:
+
+```
+singularity run  \
+  -B ${STATALIC}:/usr/local/stata/stata.lic \
+  -B $(pwd)/code:/code \
+  -B $(pwd)/data:/data \
+  -B $(pwd)/results:/results \
+  -H $(pwd) \
+  library://vilhuberlars/$MYHUBID/${MYIMG}:${TAG}
+```
+
+without the need to first convert it.
+
 
 ### Running a program
 
@@ -171,7 +192,7 @@ global results "${basedir}results"
 
 ```
 # syntax=docker/dockerfile:1.2
-FROM dataeditors/stata17:2021-11-17
+FROM dataeditors/stata17:2021-12-16
 # this runs your code 
 COPY code/* /code/
 COPY data/* /data/
