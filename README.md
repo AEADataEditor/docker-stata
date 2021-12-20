@@ -112,7 +112,7 @@ VERSION=17
 TAG=2021-11-17
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
-STATALIC=$(find $HOME/Dropbox/ -name stata.lic.$VERSION)
+STATALIC=$(find $HOME/Dropbox/ -name stata.lic.$VERSION | tail -1)
 ```
 
 ### To enter interactive stata
@@ -132,10 +132,11 @@ The above builds and runs the container using Docker. While there is a free Comm
 
 ```
 singularity run  \
-  -B ${STATALIC}/stata.lic.${VERSION}:/usr/local/stata/stata.lic \
+  -B ${STATALIC}:/usr/local/stata/stata.lic \
   -B $(pwd)/code:/code \
   -B $(pwd)/data:/data \
   -B $(pwd)/results:/results \
+  -H $(pwd) \
   docker://$MYHUBID/${MYIMG}:${TAG}
 ```
 
