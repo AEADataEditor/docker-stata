@@ -99,7 +99,7 @@ For all the subsequent `docker run` commands, we will use similar environment va
 
 ```
 VERSION=17
-TAG=2021-12-16
+TAG=2022-01-17
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
 STATALIC=$HOME/licenses/stata.lic.$VERSION
@@ -109,7 +109,7 @@ or
 
 ```
 VERSION=17
-TAG=2021-12-16
+TAG=2022-01-17
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
 STATALIC=$(find $HOME/Dropbox/ -name stata.lic.$VERSION | tail -1)
@@ -192,7 +192,7 @@ global results "${basedir}results"
 
 ```
 # syntax=docker/dockerfile:1.2
-FROM dataeditors/stata17:2021-12-16
+FROM dataeditors/stata17:2022-01-17
 # this runs your code 
 COPY code/* /code/
 COPY data/* /data/
