@@ -13,6 +13,10 @@ multiple operating system, as long as [Docker](https://docker.com) is available.
 
 You need a Stata license to run the image. If rebuilding, may need Stata license to build the image.
 
+### Where should you put the Stata license
+
+In the documentation below, we will use a (bash) environment variable to abstract from the actual location of the Stata license. This has been tested on MacOS and Linux, and it *should* work using Git Bash on Windows. Comments welcome.
+
 ## Dockerfile
 
 The [Dockerfile](Dockerfile) contains the build instructions. A few things of note:
@@ -30,16 +34,22 @@ VERSION=17
 TAG=$(date +%F)
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
+STATALIC="$(pwd)/stata.lic.${VERSION}"
 ```
+
+where the Stata license file has been copied to the local directory and called `stata.lic.17` for version 17.
 
 ### Build the image
 
 The Dockerfile relies on BuildKit syntax, for passing the license information.
+
+> You may need to first authenticate to Docker to run this: `docker login`
+
 Use the following if you just want to rebuild the Docker image (will re-use key cached information):
 
 ```
 DOCKER_BUILDKIT=1 docker build  . \
-  --secret id=statalic,src=stata.lic.${VERSION} \
+  --secret id=statalic,src="$STATALIC" \
   -t $MYHUBID/${MYIMG}:$TAG
 ```
 
@@ -53,11 +63,17 @@ DOCKER_BUILDKIT=1 docker build  . \
 ```
 > NOTE: Updating Stata actually doesn't work.
 
+This will generate a lot of output, and may take a while:
+
 ```
+[+] Building 4.7s (17/17) FINISHED                                              
+ => [internal] load build definition from Dockerfile                       0.0s
+ => => transferring dockerfile: 37B                                        0.0s
 ...
-Removing intermediate container cb12e70b0154
- ---> 52e8f83a14f8
-Successfully built 52e8f83a14f8
+ => exporting to image                                                     0.0s
+ => => exporting layers                                                    0.0s
+ => => writing image sha256:2dc159dee0413040c99b02f885eb7a6559b647cd6e86a  0.0s
+ => => naming to docker.io/dataeditors/stata17:2022-02-09                  0.0s
 ```
 
 List your images:
@@ -102,7 +118,7 @@ VERSION=17
 TAG=2022-01-17
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
-STATALIC=$HOME/licenses/stata.lic.$VERSION
+STATALIC="$(pwd)/stata.lic.${VERSION}"
 ```
 
 or
@@ -112,17 +128,19 @@ VERSION=17
 TAG=2022-01-17
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
-STATALIC=$(find $HOME/Dropbox/ -name stata.lic.$VERSION | tail -1)
+STATALIC="$(find $HOME/Dropbox/ -name stata.lic.$VERSION | tail -1)"
 ```
+
+where again, the various forms of `STATALIC` are meant to capture the location of the `stata.lic` file (in my case, it is called `stata.lic.17`, but in your case, it might be simply `stata.lic`). 
 
 ### To enter interactive stata
 
 ```
 docker run -it --rm \
-  -v ${STATALIC}:/usr/local/stata/stata.lic \
-  -v $(pwd)/code:/code \
-  -v $(pwd)/data:/data \
-  -v $(pwd)/results:/results \
+  -v "${STATALIC}":/usr/local/stata/stata.lic \
+  -v "$(pwd)/code":/code \
+  -v "$(pwd)/data":/data \
+  -v "$(pwd)/results":/results \
   $MYHUBID/${MYIMG}:${TAG}
 ```
 
