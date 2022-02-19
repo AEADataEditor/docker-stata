@@ -115,7 +115,7 @@ For all the subsequent `docker run` commands, we will use similar environment va
 
 ```
 VERSION=17
-TAG=2022-01-17
+TAG=2022-02-15
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
 STATALIC="$(pwd)/stata.lic.${VERSION}"
@@ -125,7 +125,7 @@ or
 
 ```
 VERSION=17
-TAG=2022-01-17
+TAG=2022-02-15
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
 STATALIC="$(find $HOME/Dropbox/ -name stata.lic.$VERSION | tail -1)"
@@ -168,7 +168,7 @@ and uploaded the resultant SIF file to the Sylabs.io servers ([library/larsvilhu
 
 ```
 VERSION=17
-TAG=2022-01-17
+TAG=2022-02-15
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
 SYLABSID=larsvilhuber
@@ -215,7 +215,7 @@ global results "${basedir}results"
 
 ```
 # syntax=docker/dockerfile:1.2
-FROM dataeditors/stata17:2022-01-17
+FROM dataeditors/stata17:2022-02-15
 # this runs your code 
 COPY code/* /code/
 COPY data/* /data/
