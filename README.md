@@ -87,7 +87,7 @@ For all the subsequent `docker run` commands, we will use similar environment va
 
 ```
 VERSION=16
-TAG=2021-07-08
+TAG=2022-02-14
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
 STATALIC=$HOME/licenses/stata.lic.$VERSION
@@ -97,7 +97,7 @@ or
 
 ```
 VERSION=16
-TAG=2021-07-08
+TAG=2022-02-14
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
 STATALIC=$(find $HOME/Dropbox/ -name stata.lic.$VERSION)
@@ -158,7 +158,7 @@ global results "${basedir}results"
 - Start your Dockerfile with
 ```
 # syntax=docker/dockerfile:1.2
-FROM dataeditors/stata16:2021-07-08
+FROM dataeditors/stata16:2022-02-14
 # this runs your code 
 COPY code/* /code/
 COPY data/* /data/
