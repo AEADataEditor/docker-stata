@@ -2,6 +2,10 @@
 
 VERSION=16
 TAG=$(date +%F)
+if [[ ! -z $1 ]] 
+then
+	TAG=$1
+fi
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
 
