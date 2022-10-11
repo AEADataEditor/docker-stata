@@ -22,7 +22,7 @@ The [Dockerfile](Dockerfile) contains the build instructions. A few things of no
 Set the `TAG` and `IMAGEID` accordingly. `VERSION` should be the Stata version.
 
 ```
-VERSION=12
+VERSION=11
 TAG=$(date +%F)
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
@@ -79,7 +79,7 @@ Using a pre-built image on [Docker Hub](https://hub.docker.com/repository/docker
 ### To enter interactive stata
 
 ```
-VERSION=12
+VERSION=11
 docker run -it --rm \
   -v $(pwd)/stata.lic.${VERSION}:/usr/local/stata${VERSION}/stata.lic \
   -v $(pwd)/code:/code \
@@ -94,7 +94,7 @@ The docker image has a `ENTRYPOINT` defined, which means it will act as if you w
 
 
 ```
-VERSION=12
+VERSION=11
 docker run -it --rm \
   -v $(pwd)/stata.lic.${VERSION}:/usr/local/stata${VERSION}/stata.lic \
   -v $(pwd)/code:/code \
@@ -118,7 +118,7 @@ global results "${basedir}results"
 - Remember to have the `stata.lic.13` file available
 - Start your Dockerfile with
 ```
-FROM dataeditors/stata12:2021-07-30
+FROM dataeditors/stata11:2022-10-11
 # this makes the copy work
 COPY stata.lic.${VERSION} /root/stata.lic
 RUN mv $HOME/stata.lic /usr/local/stata${VERSION}/ 
