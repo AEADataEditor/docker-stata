@@ -80,6 +80,7 @@ Using a pre-built image on [Docker Hub](https://hub.docker.com/repository/docker
 
 ```
 VERSION=11
+TAG=2022-10-14
 docker run -it --rm \
   -v $(pwd)/stata.lic.${VERSION}:/usr/local/stata${VERSION}/stata.lic \
   -v $(pwd)/code:/code \
@@ -95,12 +96,13 @@ The docker image has a `ENTRYPOINT` defined, which means it will act as if you w
 
 ```
 VERSION=11
+TAG=2022-10-14
 docker run -it --rm \
   -v $(pwd)/stata.lic.${VERSION}:/usr/local/stata${VERSION}/stata.lic \
   -v $(pwd)/code:/code \
   -v $(pwd)/data:/data \
   -v $(pwd)/results:/results \
-  dataeditors/${MYIMG} -b program.do
+  dataeditors/${MYIMG}:${TAG} -b program.do
 ```
 Your program, of course, should reference the `/data` and `/results` directories:
 
@@ -118,7 +120,7 @@ global results "${basedir}results"
 - Remember to have the `stata.lic.13` file available
 - Start your Dockerfile with
 ```
-FROM dataeditors/stata11:2022-10-11
+FROM dataeditors/stata11:2022-10-14
 # this makes the copy work
 COPY stata.lic.${VERSION} /root/stata.lic
 RUN mv $HOME/stata.lic /usr/local/stata${VERSION}/ 
