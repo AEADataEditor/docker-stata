@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION=16
+VERSION=15
 TAG=$(date +%F)
 if [[ ! -z $1 ]] 
 then
@@ -9,5 +9,6 @@ fi
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
 
-DOCKER_BUILDKIT=1 docker build  . \
+DOCKER_BUILDKIT=1 docker build \
+   . \
   -t $MYHUBID/${MYIMG}:$TAG

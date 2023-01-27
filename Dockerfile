@@ -2,10 +2,9 @@
 # First stage
 FROM ubuntu:20.04 as install
 # cheating for now
-ENV VERSION 16
+ENV VERSION 15
 COPY bin-exclude/stata-installed-${VERSION}.tgz /root/stata.tgz
 RUN cd / && tar xzf $HOME/stata.tgz \
-    && mv /usr/local/stata${VERSION} /usr/local/stata \ 
     && rm $HOME/stata.tgz 
 # No need to update old versions
 # make sure we don't accidentally copy in the license

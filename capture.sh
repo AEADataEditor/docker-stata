@@ -3,7 +3,7 @@
 # this script captures an existing Stata install, updated as necessary
 
 # set locations
-version=16
+version=15
 TARLOC=bin-exclude
 TARBASE=$(pwd)/bin-exclude/stata-installed-$version
 TARFILE=${TARBASE}.tgz

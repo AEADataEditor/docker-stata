@@ -26,7 +26,7 @@ The [Dockerfile](Dockerfile) contains the build instructions. A few things of no
 Set the `TAG` and `IMAGEID` accordingly. `VERSION` should be the Stata version.
 
 ```
-VERSION=16
+VERSION=15
 TAG=$(date +%F)
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
@@ -44,8 +44,8 @@ DOCKER_BUILDKIT=1 docker build  . -t $MYHUBID/${MYIMG}:$TAG
 ```
 ...
 Removing intermediate container cb12e70b0154
- ---> 52e8f83a16f8
-Successfully built 52e8f83a16f8
+ ---> 52e8f83a15f8
+Successfully built 52e8f83a15f8
 ```
 
 List your images:
@@ -56,7 +56,7 @@ docker images
 output:
 ```
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-<none>              <none>              52e8f83a16f8        25 seconds ago      665MB
+<none>              <none>              52e8f83a15f8        25 seconds ago      665MB
 <none>              <none>              fb095c3f9ade        31 minutes ago      670MB
 <none>              <none>              a919483dbe22        34 minutes ago      107MB
 ```
@@ -86,8 +86,8 @@ Using a pre-built image on [Docker Hub](https://hub.docker.com/u/dataeditors) to
 For all the subsequent `docker run` commands, we will use similar environment variables:
 
 ```
-VERSION=16
-TAG=2022-02-14
+VERSION=15
+TAG=2023-01-27
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
 STATALIC=$HOME/licenses/stata.lic.$VERSION
@@ -96,8 +96,8 @@ STATALIC=$HOME/licenses/stata.lic.$VERSION
 or
 
 ```
-VERSION=16
-TAG=2022-02-14
+VERSION=15
+TAG=2023-01-27
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
 STATALIC=$(find $HOME/Dropbox/ -name stata.lic.$VERSION)
@@ -154,11 +154,11 @@ global results "${basedir}results"
 ### Using the container to build a project-specific docker image
 
 - Adjust the `setup.do` file - list all packages you want installed permanently. 
-- Remember to have the `stata.lic.16` file available
+- Remember to have the `stata.lic.15` file available
 - Start your Dockerfile with
 ```
 # syntax=docker/dockerfile:1.2
-FROM dataeditors/stata16:2022-02-14
+FROM dataeditors/stata15:2023-01-27
 # this runs your code 
 COPY code/* /code/
 COPY data/* /data/
