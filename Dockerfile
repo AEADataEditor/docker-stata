@@ -13,17 +13,17 @@ RUN test -f /usr/local/stata/stata.lic && rm /usr/local/stata/stata.lic || echo 
 # Final build
 FROM ubuntu:20.04
 RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-         locales \
-         libncurses5 \
-         libfontconfig1 \
-         libpng16-16 \
-         git \
-         nano \
-         unzip \
-    && DEBIAN_FRONTEND=noninteractive apt-get upgrade -y  \
+    && apt-get install -y locales libncurses5  \
+    && apt-get upgrade -y \
     && rm -rf /var/lib/apt/lists/* \
     && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+ENV libpng http://ppa.launchpad.net/linuxuprising/libpng12/ubuntu/pool/main/libp/libpng/libpng12-0_1.2.54-1ubuntu1.1+1~ppa0~focal_amd64.deb
+RUN apt-get update \
+    && apt-get install -y wget \
+    && wget -O libpng.deb "${libpng}" \
+    && dpkg --install libpng.deb \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -f libpng.deb
 
 # Create a non-root user
 RUN groupadd -g 1000 stata \ 
