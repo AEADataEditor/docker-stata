@@ -4,7 +4,7 @@ VERSION=17
 [[ -z $1 ]] && TAG=$(date +%F) || TAG=$1
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
-SYLABSID=larsvilhuber
+SYLABSID=vilhuberlars
 
 echo "======== Build SIF file for Stata $VERSION ========"
 sudo singularity build stata${VERSION}.sif \

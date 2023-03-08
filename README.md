@@ -164,14 +164,14 @@ We have also converted the Docker image to a Singularity Image File (SIF),
 sudo singularity build stata${VERSION}.sif docker-daemon://${MYHUBID}/${MYIMG}:${TAG}
 ```
 
-and uploaded the resultant SIF file to the Sylabs.io servers ([library/larsvilhuber/dataeditors/stata17](https://cloud.sylabs.io/library/larsvilhuber/dataeditors/stata17)), so it can be used directly in a way similar to DockerHub:
+and uploaded the resultant SIF file to the Sylabs.io servers ([library/vilhuberlars/dataeditors/stata17](https://cloud.sylabs.io/library/vilhuberlars/dataeditors/stata17)), so it can be used directly in a way similar to DockerHub:
 
 ```
 VERSION=17
 TAG=2023-03-08
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
-SYLABSID=larsvilhuber
+SYLABSID=vilhuberlars
 singularity run  \
   -B ${STATALIC}:/usr/local/stata/stata.lic \
   -B $(pwd)/code:/code \
