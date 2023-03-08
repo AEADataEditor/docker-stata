@@ -13,6 +13,10 @@ multiple operating system, as long as [Docker](https://docker.com) is available.
 
 You need a Stata license to run the image. If rebuilding, may need Stata license to build the image.
 
+### Where should you put the Stata license
+
+In the documentation below, we will use a (bash) environment variable to abstract from the actual location of the Stata license. This has been tested on MacOS and Linux, and it *should* work using Git Bash on Windows. Comments welcome.
+
 ## Dockerfile
 
 The [Dockerfile](Dockerfile) contains the build instructions. A few things of note:
@@ -30,14 +34,23 @@ VERSION=16
 TAG=$(date +%F)
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
+STATALIC="$(pwd)/stata.lic.${VERSION}"
 ```
+
+where the Stata license file has been copied to the local directory and called `stata.lic.17` for version 17.
 
 ### Build the image
 
-The Dockerfile relies on BuildKit syntax.
+The Dockerfile relies on BuildKit syntax, for passing the license information.
+
+> You may need to first authenticate to Docker to run this: `docker login`
+
+Use the following if you just want to rebuild the Docker image (will re-use key cached information):
 
 ```
-DOCKER_BUILDKIT=1 docker build  . -t $MYHUBID/${MYIMG}:$TAG
+DOCKER_BUILDKIT=1 docker build  . \
+  --secret id=statalic,src="$STATALIC" \
+  -t $MYHUBID/${MYIMG}:$TAG
 ```
 
 
@@ -87,30 +100,32 @@ For all the subsequent `docker run` commands, we will use similar environment va
 
 ```
 VERSION=16
-TAG=2022-02-14
+TAG=2022-10-14
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
-STATALIC=$HOME/licenses/stata.lic.$VERSION
+STATALIC="$(pwd)/stata.lic.${VERSION}"
 ```
 
 or
 
 ```
 VERSION=16
-TAG=2022-02-14
+TAG=2022-10-14
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
-STATALIC=$(find $HOME/Dropbox/ -name stata.lic.$VERSION)
+STATALIC="$(find $HOME/Dropbox/ -name stata.lic.$VERSION | tail -1)"
 ```
+
+where again, the various forms of `STATALIC` are meant to capture the location of the `stata.lic` file (in my case, it is called `stata.lic.17`, but in your case, it might be simply `stata.lic`). 
 
 ### To enter interactive stata
 
 ```
 docker run -it --rm \
-  -v ${STATALIC}:/usr/local/stata/stata.lic \
-  -v $(pwd)/code:/code \
-  -v $(pwd)/data:/data \
-  -v $(pwd)/results:/results \
+  -v "${STATALIC}":/usr/local/stata/stata.lic \
+  -v "$(pwd)/code":/code \
+  -v "$(pwd)/data":/data \
+  -v "$(pwd)/results":/results \
   $MYHUBID/${MYIMG}:${TAG}
 ```
 
@@ -120,13 +135,38 @@ The above builds and runs the container using Docker. While there is a free Comm
 
 ```
 singularity run  \
-  -B ${STATALIC}/stata.lic.${VERSION}:/usr/local/stata/stata.lic \
+  -B ${STATALIC}:/usr/local/stata/stata.lic \
   -B $(pwd)/code:/code \
   -B $(pwd)/data:/data \
   -B $(pwd)/results:/results \
   -H $(pwd) \
   docker://$MYHUBID/${MYIMG}:${TAG}
 ```
+
+We have also converted the Docker image to a Singularity Image File (SIF), 
+
+```
+sudo singularity build stata${VERSION}.sif docker-daemon://${MYHUBID}/${MYIMG}:${TAG}
+```
+
+and uploaded the resultant SIF file to the Sylabs.io servers ([library/vilhuberlars/dataeditors/stata17](https://cloud.sylabs.io/library/vilhuberlars/dataeditors/stata17)), so it can be used directly in a way similar to DockerHub:
+
+```
+VERSION=16
+TAG=2022-10-14
+MYHUBID=dataeditors
+MYIMG=stata${VERSION}
+SYLABSID=vilhuberlars
+singularity run  \
+  -B ${STATALIC}:/usr/local/stata/stata.lic \
+  -B $(pwd)/code:/code \
+  -B $(pwd)/data:/data \
+  -B $(pwd)/results:/results \
+  -H $(pwd) \
+  library://$SYLABSID/$MYHUBID/${MYIMG}:${TAG}
+```
+
+without the need to first convert it.
 
 ### Running a program
 
@@ -158,7 +198,7 @@ global results "${basedir}results"
 - Start your Dockerfile with
 ```
 # syntax=docker/dockerfile:1.2
-FROM dataeditors/stata16:2022-02-14
+FROM dataeditors/stata16:2022-10-14
 # this runs your code 
 COPY code/* /code/
 COPY data/* /data/
