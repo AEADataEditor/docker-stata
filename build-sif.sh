@@ -11,9 +11,9 @@ sudo singularity build stata${VERSION}.sif \
     docker-daemon://${MYHUBID}/${MYIMG}:${TAG}
 
 [[ $? == 0 ]] || exit 2
-
+[[ -f stata${VERSION}.sif  ]] && sudo chown $(id -u) stata${VERSION}.sif 
 echo "======== Sign SIF file for Stata $VERSION ========"
-singularity sign stata${VERSION}.sif
+singularity sign stata${VERSION}.sif 
 
 echo "======== Push to Sylabs.io repository (under $MYHUBID ) ======="
 
