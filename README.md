@@ -183,9 +183,6 @@ singularity run  \
 
 without the need to first convert it.
 
-> [NOTE] Currently, updating the Sylabs.io server is failing.
-
-
 ### Running a program
 
 The docker image has a `ENTRYPOINT` defined, which means it will act as if you were running Stata:
@@ -197,7 +194,7 @@ docker run -it --rm \
   -v $(pwd)/code:/code \
   -v $(pwd)/data:/data \
   -v $(pwd)/results:/results \
-  $MYHUBID/${MYIMG} -b program.do
+  $MYHUBID/${MYIMG}:${TAG} -b program.do
 ```
 Your program, of course, should reference the `/data` and `/results` directories:
 
