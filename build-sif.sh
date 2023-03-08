@@ -23,7 +23,9 @@ echo "  singularity push stata${VERSION}.sif  library://$SYLABSID/$MYHUBID/${MYI
 read answer
 case $answer in 
    y|Y)
-singularity push stata${VERSION}.sif \
+   singularity remote login SylabsCloud
+   singularity remote use SylabsCloud
+   singularity push stata${VERSION}.sif \
     library://$SYLABSID/$MYHUBID/${MYIMG}:${TAG}
     ;;
     *)

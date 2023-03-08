@@ -183,6 +183,8 @@ singularity run  \
 
 without the need to first convert it.
 
+> [NOTE] Currently, updating the Sylabs.io server is failing.
+
 
 ### Running a program
 
