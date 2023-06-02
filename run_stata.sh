@@ -2,12 +2,13 @@
 
 if [[ -z $1 ]] 
 then
-	echo "provide version number"
+	echo "provide date of snapshot"
 	exit 2
 fi
 
-VERSION=$1
-TAG=2022-01-17
+VERSION=17
+TAG=${1:-2023-05-16}
+shift
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
 STATALIC=$(find $HOME/Dropbox/ -name stata.lic.$VERSION | tail -1)
@@ -15,5 +16,5 @@ docker run -it --rm \
   -v ${STATALIC}:/usr/local/stata/stata.lic \
   -v $(pwd)/code:/code \
   -v $(pwd)/data:/data \
-  $MYHUBID/${MYIMG}:${TAG}
+  $MYHUBID/${MYIMG}:${TAG} "$@"
 
