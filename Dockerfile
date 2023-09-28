@@ -11,12 +11,13 @@ RUN cd / && tar xzf $HOME/stata.tgz \
 RUN test -f /usr/local/stata/stata.lic && rm /usr/local/stata/stata.lic || echo "Not found"
 
 # Final build
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get upgrade -y  \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y \
          locales \
          libncurses5 \
+         libcurl4 \
          libfontconfig1 \
          git \
          nano \
