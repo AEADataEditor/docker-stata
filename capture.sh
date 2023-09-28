@@ -18,11 +18,17 @@ printf "%20s " "Prepare build."
 [[ -d $BUILD ]] && \rm -rf $BUILD
 mkdir -p $BUILD
 cd $BUILD
-tar xzf $TARFILE && echo "Tar file unpacked." || exit 2
-\rm -rf $BUILD/$INSTALLED/utilities/.old
-[[ "$VERSION" == "17" ]] && \rm -rf $BUILD/$INSTALLED/utilities/java/linux-x64
-printf "%20s " ""
-echo "Ready for sync."
+if [[ -f $TARFILE ]]
+then
+	tar xzf $TARFILE && echo "Tar file unpacked." || exit 2
+	\rm -rf $BUILD/$INSTALLED/utilities/.old
+	[[ "$VERSION" == "17" || "$VERSION" == 18 ]] && \rm -rf $BUILD/$INSTALLED/utilities/java/linux-x64
+	printf "%20s " ""
+	echo "Ready for sync."
+else
+	echo "No previous version found"
+	mkdir -p $BUILD/$INSTALLED
+fi
 echo "  $BUILD"
 
 # Figure out the latest java VERSION

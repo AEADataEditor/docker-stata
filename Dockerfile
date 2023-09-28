@@ -2,7 +2,7 @@
 # First stage
 FROM ubuntu:20.04 as install
 # cheating for now
-ENV VERSION 17
+ARG VERSION=17
 COPY bin-exclude/stata-installed-${VERSION}.tgz /root/stata.tgz
 RUN cd / && tar xzf $HOME/stata.tgz \
     && mv /usr/local/stata${VERSION} /usr/local/stata \ 
