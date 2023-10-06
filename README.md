@@ -138,6 +138,7 @@ where again, the various forms of `STATALIC` are meant to capture the location o
 ```
 docker run -it --rm \
   -v "${STATALIC}":/usr/local/stata/stata.lic \
+  -w /code \
   -v "$(pwd)/code":/code \
   -v "$(pwd)/data":/data \
   -v "$(pwd)/results":/results \
@@ -183,28 +184,49 @@ singularity run  \
 
 without the need to first convert it.
 
+### Directory structure
+
+In the following, we are going to assume that your project has the following directory structure, and simplify the directory mounts:
+
+```
+project/
+   data/
+   code/
+      01_preparedata.do
+      02_runanalysis.do
+   results/
+   main.do
+   setup.do
+```
+
+`setup.do` installs all required Stata ado packages via the necessary commands (`ssc install`, `net install pkg, from(url)`). `main.do` is the main controller script, which here resides in the root directory of the project. Other options are possible. We will run all commands with the working directory set to `/path/to/project`. When NOT using Docker, you can achieve the same goal by double-clicking `main.do`, which will automatically set the working directory to where `main.do` resides.
+
 ### Running a program
 
 The docker image has a `ENTRYPOINT` defined, which means it will act as if you were running Stata:
 
-
-```
+```bash
+cd /path/to/project
 docker run -it --rm \
   -v ${STATALIC}/stata.lic.${VERSION}:/usr/local/stata/stata.lic \
-  -v $(pwd)/code:/code \
-  -v $(pwd)/data:/data \
-  -v $(pwd)/results:/results \
+  -v $(pwd):/project \
+  -w /project \
   $MYHUBID/${MYIMG}:${TAG} -b program.do
 ```
-Your program, of course, should reference the `/data` and `/results` directories:
+Your program, of course, should reference the `/data` and `/results` directories, ideally in a location-agnostic manner:
 
 ```
-global basedir "/"
-global data "${basedir}data"
-global results "${basedir}results"
-// use "${data}/mydata.dta"
-// graph export "${results}/figure1.png"
+// we start in the rootdir
+// Note: we could double-check that we are in the right directory:
+// confirm file "main.do"
+global rootdir : pwd
+global data "${rootdir}data"
+global results "${rootdir}results"
+// all subsequent use references the globals
+use "${data}/mydata.dta"
+graph export "${results}/figure1.png"
 ```
+
 
 ### Using the container to build a project-specific docker image
 
@@ -215,12 +237,13 @@ global results "${basedir}results"
 ```
 # syntax=docker/dockerfile:1.2
 FROM dataeditors/stata17:2023-03-08
-# this runs your code 
-COPY code/* /code/
-COPY data/* /data/
-RUN --mount=type=secret,id=statalic,dst=/usr/local/stata/stata.lic /usr/local/stata/stata-mp do /code/setup.do
+# this runs your setup code 
+COPY code/setup.do setup.do
+RUN --mount=type=secret,id=statalic,dst=/usr/local/stata/stata.lic /usr/local/stata/stata-mp do /setup.do
 
 USER statauser:stata
+VOLUME /project
+WORKDIR /project
 # run the master file
 ENTRYPOINT ["stata-mp","/code/master.do"]
 ```
@@ -228,12 +251,9 @@ ENTRYPOINT ["stata-mp","/code/master.do"]
 build, and then run this Docker image with
 
 ```
-docker run --secret id=statalic,src=stata.lic.${VERSION} \
-  -v $(pwd)/results:/results  \
-  larsvilhuber/greatpaper:2021-06-08
+docker run \
+  -v ${STATALIC}/stata.lic.${VERSION}:/usr/local/stata/stata.lic \
+  -v $(pwd):/project \
+  larsvilhuber/greatpaper:2021-06-08 -b main.do
 ```
-and the results of running the code (in `code`) on the data (in `data`) will show up in the `results` folder which is local to your workstation.
-
-## NOTE
-
-This entire process could be automated, using [Travis-CI](https://docs.travis-ci.com/user/docker/#pushing-a-docker-image-to-a-registry) or [Github Actions](https://github.com/marketplace/actions/build-and-push-docker-images). Not done yet.
+and the results of running the code (in `code`) on the data (in `data`) will show up in the `results` folder which is local to your workstation, with no need to install any additional Stata packages.
