@@ -1,6 +1,6 @@
 #!/bin/bash
 
-[[ -z $VERSION ]] && VERSION=17
+[[ -z $VERSION ]] && VERSION=18
 [[ -z $1 ]] && TAG=$(date +%F) || TAG=$1
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}

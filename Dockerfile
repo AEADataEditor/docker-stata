@@ -39,13 +39,14 @@ RUN echo "export PATH=/usr/local/stata:${PATH}" >> /root/.bashrc
 ENV PATH "$PATH:/usr/local/stata" 
 
 USER statauser:stata
-WORKDIR /code
+WORKDIR /project
+VOLUME /project
 
 # if you wanted to make this a project specific image,
 # do the following:
 #
-#  COPY setup.do /code
-#  RUN cd /code && stata -b do setup.do
+#  COPY setup.do /setup.do
+#  RUN stata -b do /setup.do
 #
 
 ENTRYPOINT ["stata-mp"]
