@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:1.2
 # First stage
-FROM ubuntu:20.04 as install
+FROM ubuntu:22.04 as install
 # cheating for now
-ARG VERSION=17
+ARG VERSION=18
 COPY bin-exclude/stata-installed-${VERSION}.tgz /root/stata.tgz
 RUN cd / && tar xzf $HOME/stata.tgz \
     && mv /usr/local/stata${VERSION} /usr/local/stata \ 
