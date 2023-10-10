@@ -41,27 +41,14 @@ where the Stata license file has been copied to the local directory and called `
 
 ### Build the image
 
-The Dockerfile relies on BuildKit syntax, for passing the license information.
-
-> You may need to first authenticate to Docker to run this: `docker login`
-
-Use the following if you just want to rebuild the Docker image (will re-use key cached information):
+Basic image building is easy:
 
 ```
 DOCKER_BUILDKIT=1 docker build  . \
-  --secret id=statalic,src="$STATALIC" \
   -t $MYHUBID/${MYIMG}:$TAG
 ```
 
-or, if updating Stata, use the following, which will force an update through Stata:
-
-```
-DOCKER_BUILDKIT=1 docker build  . \
-  --secret id=statalic,src=stata.lic.${VERSION} \
-  --build-arg CACHEBUST=$(date +%s) \
-  -t $MYHUBID/${MYIMG}:$TAG
-```
-> NOTE: Updating Stata actually doesn't work.
+In some cases, you may need to run Stata during the build process. In this case, you need to pass the license information into the Dockerfile. This is not currently supported, since there is a risk that the license file be embedded into the image, and should only be used for internal (non-public) containers. 
 
 This will generate a lot of output, and may take a while:
 
@@ -102,13 +89,33 @@ We can browse the provided images at [https://hub.docker.com/u/dataeditors](http
 
 ![Screenshot of repository for dataeditors](assets/docker-hub-dataeditors.png)
 
+
 ## Using the image
+
+### Directory structure
+
+In the following, we are going to assume that your project has the following directory structure, and simplify the directory mounts:
+
+```
+project/
+   data/
+   code/
+      01_preparedata.do
+      02_runanalysis.do
+   results/
+   main.do
+   setup.do
+```
+
+`setup.do` installs all required Stata ado packages via the necessary commands (`ssc install`, `net install pkg, from(url)`). `main.do` is the main controller script, which here resides in the root directory of the project. Other options are possible. We will run all commands with the working directory set to `/path/to/project`. When NOT using Docker, you can achieve the same goal by double-clicking `main.do`, which will automatically set the working directory to where `main.do` resides.
+
+### Using pre-built images
 
 Using a pre-built image on [Docker Hub](https://hub.docker.com/u/dataeditors) to run a program. 
 
 > NOTE: because Stata is proprietary software, we need to mount a license file. 
 
-> NOTE: We are using a working directory of "/code" here - check the [Dockerfile](Dockerfile) for the precise location.
+> NOTE: We are using a working directory of "/project" here - check the [Dockerfile](Dockerfile) for the precise location.
 
 
 For all the subsequent `docker run` commands, we will use similar environment variables:
@@ -138,10 +145,7 @@ where again, the various forms of `STATALIC` are meant to capture the location o
 ```
 docker run -it --rm \
   -v "${STATALIC}":/usr/local/stata/stata.lic \
-  -w /code \
-  -v "$(pwd)/code":/code \
-  -v "$(pwd)/data":/data \
-  -v "$(pwd)/results":/results \
+  -v "$(pwd):/project \
   $MYHUBID/${MYIMG}:${TAG}
 ```
 
@@ -152,9 +156,7 @@ The above builds and runs the container using Docker. While there is a free Comm
 ```
 singularity run  \
   -B ${STATALIC}:/usr/local/stata/stata.lic \
-  -B $(pwd)/code:/code \
-  -B $(pwd)/data:/data \
-  -B $(pwd)/results:/results \
+  -B $(pwd):/project \
   -H $(pwd) \
   docker://$MYHUBID/${MYIMG}:${TAG}
 ```
@@ -175,31 +177,13 @@ MYIMG=stata${VERSION}
 SYLABSID=vilhuberlars
 singularity run  \
   -B ${STATALIC}:/usr/local/stata/stata.lic \
-  -B $(pwd)/code:/code \
-  -B $(pwd)/data:/data \
-  -B $(pwd)/results:/results \
+  -B $(pwd):/project \
   -H $(pwd) \
   library://$SYLABSID/$MYHUBID/${MYIMG}:${TAG}
 ```
 
 without the need to first convert it.
 
-### Directory structure
-
-In the following, we are going to assume that your project has the following directory structure, and simplify the directory mounts:
-
-```
-project/
-   data/
-   code/
-      01_preparedata.do
-      02_runanalysis.do
-   results/
-   main.do
-   setup.do
-```
-
-`setup.do` installs all required Stata ado packages via the necessary commands (`ssc install`, `net install pkg, from(url)`). `main.do` is the main controller script, which here resides in the root directory of the project. Other options are possible. We will run all commands with the working directory set to `/path/to/project`. When NOT using Docker, you can achieve the same goal by double-clicking `main.do`, which will automatically set the working directory to where `main.do` resides.
 
 ### Running a program
 
