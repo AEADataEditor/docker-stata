@@ -7,7 +7,7 @@
 TARLOC=bin-exclude
 TARBASE=$(pwd)/bin-exclude/stata-installed-$VERSION
 TARFILE=${TARBASE}.tgz
-VTARFILE=${TARBASE}.$(date +%F).tgz
+VTARFILE=${TARBASE}-$(date +%F)
 TMP=/mnt/local/fast_home/$USER/tmp
 BUILD=$TMP/stata-build
 INSTALLED=usr/local/stata$VERSION
@@ -43,16 +43,47 @@ rsync -au --exclude='.old' /$INSTALLED/ $BUILD/$INSTALLED/ && echo "Done." || ex
 
 printf "%20s " "Remove license:"
 #LICFILE=$BUILD/$INSTALLED/stata.lic
-find $BUILD/$INSTALLED -name stata.lic\* -exec rm {} \;
+find $BUILD/$INSTALLED -name stata.lic\* -exec rm {} \; && echo "Done"
 
 # Pack it back up
 
-printf "%20s " "Rebuild tarfile:"
+printf "%20s \n" "Rebuild tarfile:"
 cd $BUILD
-tar czf $VTARFILE $INSTALLED && echo "Done."
+printf "%20s - " "Docs"
+tar czf ${VTARFILE}-docs.tgz $INSTALLED/docs \
+	&& \rm -rf $INSTALLED/docs || exit 2
+echo "Done"
+printf "%20s - " "Help files"
+tar czf ${VTARFILE}-help.tgz $(find $INSTALLED -name \*hlp) \
+	&& find $INSTALLED -name \*hlp -exec rm {} \; || exit 2
+echo "Done"
+for arg in mp se be
+do
+   printf "%20s - " "Stata $arg" 
+   case $arg in 
+	   be)
+		   type=
+		   ;;
+	   *)
+		   type=-$arg
+		   ;;
+   esac
+   tar czf ${VTARFILE}-${arg}.tgz $INSTALLED/libstata${type}.* $INSTALLED/stata${type} 
+   echo "Done"
+   printf "%20s - " "Stata X $arg"
+   tar czf ${VTARFILE}-x${arg}.tgz $INSTALLED/xstata${type} $INSTALLED/libstata${type}.*  $INSTALLED/stata_pdf 
+   echo "Done"
+done
 
-printf "%20s " "Replace tarfile?"
-\cp -i $VTARFILE $TARFILE
+printf "%20s - " "Deleting excess files" 
+\rm -rf $INSTALLED/libstata${arg}* $INSTALLED/stata-*  || exit 2
+\rm -rf $INSTALLED/libstata* $INSTALLED/stata || exit 2
+\rm -rf $INSTALLED/x* $INSTALLED/stata_pdf|| exit 2
+echo "Done"
+
+printf "%20s - " "Stata base - whats left"
+tar czf ${VTARFILE}-base.tgz $INSTALLED && echo "Done."
+
 echo "All done."
 
 

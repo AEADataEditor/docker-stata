@@ -3,12 +3,14 @@
 FROM ubuntu:22.04 as install
 # cheating for now
 ARG VERSION=18
-COPY bin-exclude/stata-installed-${VERSION}.tgz /root/stata.tgz
+ARG CAPTURE=yyyy-mm-dd
+
+COPY bin-exclude/stata-installed-${VERSION}-${CAPTURE}-base.tgz /root/stata.tgz
 RUN cd / && tar xzf $HOME/stata.tgz \
     && mv /usr/local/stata${VERSION} /usr/local/stata \ 
-    && rm $HOME/stata.tgz 
-# make sure we don't accidentally copy in the license
-RUN test -f /usr/local/stata/stata.lic && rm /usr/local/stata/stata.lic || echo "Not found"
+    && rm $HOME/stata.tgz \
+    && test -f /usr/local/stata/stata.lic \
+    && exit 2 || echo "Not found"
 
 # Final build
 FROM ubuntu:22.04
@@ -41,13 +43,4 @@ ENV PATH "$PATH:/usr/local/stata"
 USER statauser:stata
 WORKDIR /project
 VOLUME /project
-
-# if you wanted to make this a project specific image,
-# do the following:
-#
-#  COPY setup.do /setup.do
-#  RUN stata -b do /setup.do
-#
-
-ENTRYPOINT ["stata-mp"]
 

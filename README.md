@@ -9,9 +9,11 @@ multiple operating system, as long as [Docker](https://docker.com) is available.
 
 > NOTE: The image created by these instructions contains binary code that is &copy; Stata. Permission was granted by Stata to Lars Vilhuber to post these images, without the license. A valid license is necessary to build and use these images. 
 
+> NOTE: The X (GUI) versions of Stata in these images are complete, but the container is NOT COMPLETE and will not work without additional installation of X11 libraries. If you do not know what I'm talking about do not use them AT ALL. If you do, then use these images in the `FROM` statement of a Dockerfile, then add all the necessary libraries.
+ 
 ## Requirements
 
-You need a Stata license to run the image. If rebuilding, may need Stata license to build the image.
+You need a Stata license to run the image.
 
 ### Where should you put the Stata license
 
@@ -22,15 +24,14 @@ In the documentation below, we will use a (bash) environment variable to abstrac
 The [Dockerfile](Dockerfile) contains the build instructions. A few things of note:
 
 
-
 ## Build
 
 ### Set up a few things
 
-Set the `TAG` and `IMAGEID` accordingly. `VERSION` should be the Stata version.
+Set the `TAG`, `MYHUBID` and `MYIMG` accordingly, if intending to rebuild. `VERSION` should be the Stata version.
 
 ```
-VERSION=17
+VERSION=18
 TAG=$(date +%F)
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
@@ -44,11 +45,38 @@ where the Stata license file has been copied to the local directory and called `
 Basic image building is easy:
 
 ```
-DOCKER_BUILDKIT=1 docker build  . \
-  -t $MYHUBID/${MYIMG}:$TAG
+DOCKER_BUILDKIT=1 docker build \
+        -f Dockerfile.base \
+        --build-arg VERSION=$VERSION  \
+        --build-arg CAPTURE=$CAPTURE  \
+        . \
+        -t $MYHUBID/${MYIMG}-base:$TAG
 ```
 
-In some cases, you may need to run Stata during the build process. In this case, you need to pass the license information into the Dockerfile. This is not currently supported, since there is a risk that the license file be embedded into the image, and should only be used for internal (non-public) containers. 
+However, since 2023-10, I have restructured the images to be leaner, but this means that multiple images must be built. 
+
+- First build the `base` image above. This will contain all files from a Stata install EXCEPT the actual Stata binaries, and the EXCEPT the help and documentation files.
+- The focal images are the `be`, `se`, and `mp` images. They contain the necessary Stata binaries to run command-line Stata. No help files, GUI binaries, or documentation is included.
+- If you wish to use the image for interactive development, help files are useful. The `-i` suffix indicates that these are images for interactive development (e.g., `stata18-mp-i`.
+- If you wish to run the GUI version of Stata, you will want to use the `-x` images as a basis. NOTE THAT I DO NOT USE THESE, AND THEY ARE NOT FUNCTIONAL because they are missing many X11 libraries. You will need to base your image on these.
+ 
+To build all these images from captures of a workstation install, a convenience script `build.sh` is provided. It is invoked with
+
+```
+./build.sh -v[ersion] -t[ag] -c[apture]
+
+where 
+  - Version: of Stata (17, 18, ...)
+  - Tag: tag to give Docker image (typically date)
+  - Capture: of the capture
+  - h: this helpfile
+```
+
+e.g.
+
+```
+./build.sh -v 18 -t test -c 2023-10-14
+```
 
 This will generate a lot of output, and may take a while:
 
@@ -60,32 +88,42 @@ This will generate a lot of output, and may take a while:
  => exporting to image                                                     0.0s
  => => exporting layers                                                    0.0s
  => => writing image sha256:2dc159dee0413040c99b02f885eb7a6559b647cd6e86a  0.0s
- => => naming to docker.io/dataeditors/stata17:2022-02-09                  0.0s
+ => => naming to docker.io/dataeditors/stata18:2023-10-09                  0.0s
 ```
 
-List your images:
+Once done, you should have multiple images:
+
 
 ```
 docker images 
 ```
+
 output:
+
 ```
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-<none>              <none>              52e8f83a14f8        25 seconds ago      665MB
-<none>              <none>              fb095c3f9ade        31 minutes ago      670MB
-<none>              <none>              a919483dbe22        34 minutes ago      107MB
+dataeditors/stata18-mp-x  test  2fbc841cba25  9 minutes ago   1.92GB
+dataeditors/stata18-mp-i  test  642e4a006672  9 minutes ago   1.41GB
+dataeditors/stata18-mp    test  4c1580c00abd  9 minutes ago   1.18GB
+dataeditors/stata18-se-x  test  dedf75051503  9 minutes ago   1.76GB
+dataeditors/stata18-se-i  test  76786bda8680  9 minutes ago   1.32GB
+dataeditors/stata18-se    test  662e2d09026e  9 minutes ago   1.12GB
+dataeditors/stata18-be-x  test  07b1b687e984  9 minutes ago   1.76GB
+dataeditors/stata18-be-i  test  f5600d1fe84d  9 minutes ago   1.32GB
+dataeditors/stata18-be    test  5f87e594ddbf  9 minutes ago   1.12GB
+dataeditors/stata18-base  test  90364eb9a9d9  9 minutes ago   795MB
 ```
 
 ## Publish the image 
 
-The resulting docker image can be uploaded to [Docker Hub](https://hub.docker.com/), if desired, or any other of the container registries. 
+The resulting docker image(s) can be uploaded to [Docker Hub](https://hub.docker.com/), if desired, or any other of the container registries. 
 
 
 ```
 docker push $MYHUBID/${MYIMG}:$TAG
 ```
 
-We can browse the provided images at [https://hub.docker.com/u/dataeditors](https://hub.docker.com/u/dataeditors):
+You can browse the provided images at [https://hub.docker.com/u/dataeditors](https://hub.docker.com/u/dataeditors):
 
 ![Screenshot of repository for dataeditors](assets/docker-hub-dataeditors.png)
 
@@ -121,10 +159,11 @@ Using a pre-built image on [Docker Hub](https://hub.docker.com/u/dataeditors) to
 For all the subsequent `docker run` commands, we will use similar environment variables:
 
 ```
-VERSION=17
-TAG=2023-03-08
+VERSION=18
+TAG=2023-10-14
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
+TYPE=mp
 STATALIC="$(pwd)/stata.lic.${VERSION}"
 ```
 
@@ -135,6 +174,7 @@ VERSION=17
 TAG=2023-03-08
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
+TYPE=mp
 STATALIC="$(find $HOME/Dropbox/ -name stata.lic.$VERSION | tail -1)"
 ```
 
@@ -146,8 +186,11 @@ where again, the various forms of `STATALIC` are meant to capture the location o
 docker run -it --rm \
   -v "${STATALIC}":/usr/local/stata/stata.lic \
   -v "$(pwd):/project \
-  $MYHUBID/${MYIMG}:${TAG}
+  $MYHUBID/${MYIMG}-${TYPE}-i:${TAG}
 ```
+
+where I am using the `mp-i` image because my license covers MP and I would like to have the help files. 
+
 
 ### Aside: Using other container management software
 
@@ -158,7 +201,7 @@ singularity run  \
   -B ${STATALIC}:/usr/local/stata/stata.lic \
   -B $(pwd):/project \
   -H $(pwd) \
-  docker://$MYHUBID/${MYIMG}:${TAG}
+  docker://$MYHUBID/${MYIMG}-${TYPE}-i:${TAG}
 ```
 
 We have also converted the Docker image to a Singularity Image File (SIF), 
@@ -179,7 +222,7 @@ singularity run  \
   -B ${STATALIC}:/usr/local/stata/stata.lic \
   -B $(pwd):/project \
   -H $(pwd) \
-  library://$SYLABSID/$MYHUBID/${MYIMG}:${TAG}
+  library://$SYLABSID/$MYHUBID/${MYIMG}-${TYPE}-i:${TAG}
 ```
 
 without the need to first convert it.
@@ -195,8 +238,11 @@ docker run -it --rm \
   -v ${STATALIC}/stata.lic.${VERSION}:/usr/local/stata/stata.lic \
   -v $(pwd):/project \
   -w /project \
-  $MYHUBID/${MYIMG}:${TAG} -b program.do
+  $MYHUBID/${MYIMG}-${TYPE}:${TAG} -b program.do
 ```
+
+I am using here the `mp` image, because I do not need the help files. In the context of some automated running, or just project isolation, this image is a bit smaller. 
+
 Your program, of course, should reference the `/data` and `/results` directories, ideally in a location-agnostic manner:
 
 ```

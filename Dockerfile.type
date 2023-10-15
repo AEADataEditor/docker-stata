@@ -1,0 +1,23 @@
+# syntax=docker/dockerfile:1.2
+# Start with the base image
+ARG VERSION
+ARG BASIS=base
+ARG TAG=latest
+
+FROM dataeditors/stata${VERSION}-${BASIS}:$TAG
+
+# now add the desired version
+ARG VERSION
+ARG TYPE=unknown
+ARG CAPTURE=yyyy-mm-dd
+USER root
+COPY bin-exclude/stata-installed-${VERSION}-${CAPTURE}-${TYPE}.tgz /root/stata.tgz
+
+RUN cd / && tar xzf $HOME/stata.tgz \
+    && test -d /usr/local/stata/  || mkdir /usr/local/stata/ \
+    && cp -a /usr/local/stata${VERSION}/* /usr/local/stata/ \
+    && rm $HOME/stata.tgz
+
+# set default user and entrypoint
+USER statauser:stata
+ENTRYPOINT ["stata-mp"]
