@@ -10,7 +10,9 @@ RUN cd / && tar xzf $HOME/stata.tgz \
     && mv /usr/local/stata${VERSION} /usr/local/stata \ 
     && rm $HOME/stata.tgz \
     && test -f /usr/local/stata/stata.lic \
-    && exit 2 || echo "Not found"
+    && exit 2 || echo "Not found" \
+    && test -f /usr/local/stata/stata.lic.bak \
+    && exit 2 || echo "Not found" 
 
 # Final build
 FROM ubuntu:22.04
