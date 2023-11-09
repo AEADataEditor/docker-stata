@@ -94,10 +94,16 @@ done
 exit 0
 echo "Ready to push?"
 echo "  docker push  $MYHUBID/${MYIMG}:$TAG"
+echo " (will iterate across all images)"
 read answer
 case $answer in 
    y|Y)
-   docker push  $MYHUBID/${MYIMG}:$TAG
+   for arg $(docker images | grep $TAG | grep ${MYIMG}- | awk ' { print $1 } '))
+   do
+	  docker push ${arg}:$TAG
+	  # also push the README - requires installation of docker-pushrm https://github.com/christian-korneck/docker-pushrm
+	  docker pushrm ${arg}
+   done
    ;;
    *)
    exit 0

@@ -1,11 +1,13 @@
 # Docker image basic Stata image
 
+The primary source for this README is at [https://github.com/AEADataEditor/docker-stata](https://github.com/AEADataEditor/docker-stata).
+
 ## Purpose
 
 This Docker image is meant to isolate and stabilize that environment, and should be portable across
 multiple operating system, as long as [Docker](https://docker.com) is available.
 
-> To learn more about the use of containers for research reproducibility, see [Carpentries' docker-introduction](https://carpentries-incubator.github.io/docker-introduction/index.html). For commercial services running containers, see [codeocean.com](https://codeocean.com), [gigantum](https://gigantum.com/), or any of the cloud service providers. For an academic project using containers, see [Whole Tale](https://wholetale.org/).
+> To learn more about the use of containers for research reproducibility, see [Carpentries' docker-introduction](https://carpentries-incubator.github.io/docker-introduction/index.html). For commercial services running containers, see [codeocean.com](https://codeocean.com),  or any of the cloud service providers. For an academic project using containers, see [Whole Tale](https://wholetale.org/).
 
 > NOTE: The image created by these instructions contains binary code that is &copy; Stata. Permission was granted by Stata to Lars Vilhuber to post these images, without the license. A valid license is necessary to build and use these images. 
 
