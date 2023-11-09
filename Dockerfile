@@ -8,7 +8,8 @@ RUN cd / && tar xzf $HOME/stata.tgz \
     && mv /usr/local/stata${VERSION} /usr/local/stata \ 
     && rm $HOME/stata.tgz 
 # make sure we don't accidentally copy in the license
-RUN test -f /usr/local/stata/stata.lic && rm /usr/local/stata/stata.lic || echo "Not found"
+RUN test -f /usr/local/stata/stata.lic && rm /usr/local/stata/stata.lic || echo "Not found" \
+    && test -f /usr/local/stata/stata.lic.bak && rm /usr/local/stata/stata.lic.bak || echo "Not found"
 
 # Final build
 FROM ubuntu:22.04
