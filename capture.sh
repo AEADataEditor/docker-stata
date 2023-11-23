@@ -43,7 +43,8 @@ rsync -au --exclude='.old' /$INSTALLED/ $BUILD/$INSTALLED/ && echo "Done." || ex
 
 printf "%20s " "Remove license:"
 #LICFILE=$BUILD/$INSTALLED/stata.lic
-find $BUILD/$INSTALLED -name stata.lic\* -exec rm {} \; && echo "Done"
+find $BUILD/$INSTALLED -name stata.lic\* -exec rm {} \;
+echo "Done."
 
 # Pack it back up
 
