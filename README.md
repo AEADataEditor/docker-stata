@@ -115,19 +115,20 @@ For all the subsequent `docker run` commands, we will use similar environment va
 
 ```
 VERSION=17
-TAG=2023-03-08
+TAG=2024-02-13
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
+```
+
+and either
+
+```
 STATALIC="$(pwd)/stata.lic.${VERSION}"
 ```
 
 or
 
 ```
-VERSION=17
-TAG=2023-03-08
-MYHUBID=dataeditors
-MYIMG=stata${VERSION}
 STATALIC="$(find $HOME/Dropbox/ -name stata.lic.$VERSION | tail -1)"
 ```
 
@@ -167,10 +168,6 @@ sudo singularity build stata${VERSION}.sif docker-daemon://${MYHUBID}/${MYIMG}:$
 and uploaded the resultant SIF file to the Sylabs.io servers ([library/vilhuberlars/dataeditors/stata17](https://cloud.sylabs.io/library/vilhuberlars/dataeditors/stata17)), so it can be used directly in a way similar to DockerHub:
 
 ```
-VERSION=17
-TAG=2023-03-08
-MYHUBID=dataeditors
-MYIMG=stata${VERSION}
 SYLABSID=vilhuberlars
 singularity run  \
   -B ${STATALIC}:/usr/local/stata/stata.lic \
@@ -214,7 +211,7 @@ global results "${basedir}results"
 
 ```
 # syntax=docker/dockerfile:1.2
-FROM dataeditors/stata17:2023-03-08
+FROM dataeditors/stata17:2024-02-13
 # this runs your code 
 COPY code/* /code/
 COPY data/* /data/
@@ -234,6 +231,3 @@ docker run --secret id=statalic,src=stata.lic.${VERSION} \
 ```
 and the results of running the code (in `code`) on the data (in `data`) will show up in the `results` folder which is local to your workstation.
 
-## NOTE
-
-This entire process could be automated, using [Travis-CI](https://docs.travis-ci.com/user/docker/#pushing-a-docker-image-to-a-registry) or [Github Actions](https://github.com/marketplace/actions/build-and-push-docker-images). Not done yet.
