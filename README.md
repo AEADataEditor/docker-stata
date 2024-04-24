@@ -143,7 +143,7 @@ where again, the various forms of `STATALIC` are meant to capture the location o
 ```
 docker run -it --rm \
   -v "${STATALIC}":/usr/local/stata/stata.lic \
-  -v "$(pwd):/project \
+  -v "$(pwd)":/project \
   $MYHUBID/${MYIMG}:${TAG}
 ```
 
