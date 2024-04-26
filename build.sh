@@ -27,6 +27,17 @@ VERSION=${VERSION:-18}
 [[ -z $TAG ]] && TAG=$(date +%F) 
 [[ -z $CAPTURE ]] && $0 -h
 
+cat << EOF
+
+  VERSION: $VERSION
+  TAG    : $TAG
+  CAPTURE: $CAPTURE
+
+Ready? 
+
+EOF
+read
+
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
 
