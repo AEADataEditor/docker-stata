@@ -37,10 +37,8 @@ VERSION=18
 TAG=$(date +%F)
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
-STATALIC="$(pwd)/stata.lic.${VERSION}"
 ```
 
-where the Stata license file has been copied to the local directory and called `stata.lic.17` for version 17.
 
 ### Build the image
 
@@ -180,7 +178,7 @@ TYPE=mp
 STATALIC="$(find $HOME/Dropbox/ -name stata.lic.$VERSION | tail -1)"
 ```
 
-where again, the various forms of `STATALIC` are meant to capture the location of the `stata.lic` file (in my case, it is called `stata.lic.17`, but in your case, it might be simply `stata.lic`). 
+where again, the various forms of `STATALIC` are meant to capture the location of the `stata.lic` file (in my case, it is called `stata.lic.18`, but in your case, it might be simply `stata.lic`). 
 
 ### To enter interactive stata
 
@@ -215,10 +213,6 @@ sudo singularity build stata${VERSION}.sif docker-daemon://${MYHUBID}/${MYIMG}:$
 and uploaded the resultant SIF file to the Sylabs.io servers ([library/vilhuberlars/dataeditors/stata17](https://cloud.sylabs.io/library/vilhuberlars/dataeditors/stata17)), so it can be used directly in a way similar to DockerHub:
 
 ```
-VERSION=17
-TAG=2023-03-08
-MYHUBID=dataeditors
-MYIMG=stata${VERSION}
 SYLABSID=vilhuberlars
 singularity run  \
   -B ${STATALIC}:/usr/local/stata/stata.lic \
@@ -268,7 +262,7 @@ graph export "${results}/figure1.png"
 
 ```
 # syntax=docker/dockerfile:1.2
-FROM dataeditors/stata17:2023-03-08
+FROM dataeditors/stata18:2024-02-14
 # this runs your setup code 
 COPY code/setup.do setup.do
 RUN --mount=type=secret,id=statalic,dst=/usr/local/stata/stata.lic /usr/local/stata/stata-mp do /setup.do
