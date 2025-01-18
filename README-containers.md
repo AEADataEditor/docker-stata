@@ -23,15 +23,22 @@ Unfortunately, it wasn't immediately clear which version was being updated. The 
 | Tag | Stata version | `born_date` | Note |
 | --- | --- | --- | --- |
 | `2024-04-04` | 18 | 04 Apr 2024 | |
-| `2024-04-30` | 18 | 30 Apr 2024 | Last update of Stata 18 here! |
+| `2024-04-30` | 18 | 30 Apr 2024 | **Last update of Stata 18 here!** |
 | `2024-06-25` | 18.5 | 25 Jun 2024 | First version of StataNow 18.5  |
 | `2024-08-07` | 18.5 | 07 Aug 2024 | |
 | `2024-09-04` | 18.5 | 04 Sep 2024 | |
 | `2024-10-16` | 18.5 | 16 Oct 2024 | |
-
+| `2024-12-18` | 18.5 | 18 Dec 2024 | |
 
 
 I will shortly restart the versioning of Stata 18 versions as well.
+
+Going forward, 
+
+- Stata 18 can be found at <https://hub.docker.com/r/dataeditors/stata18>
+- StataNow 18.5 can be found at <https://hub.docker.com/r/dataeditors/stata18now>
+
+Versions incorrectly tagged as `stata18` may disappear in the future, please update your pulls if you are using StataNow 18!
 
 
 ## For more information
