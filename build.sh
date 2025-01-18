@@ -20,4 +20,6 @@ case $answer in
    ;;
 esac
 
+echo "Pushing any updates to the Docker Hub README"
+docker pushrm $MYHUBID/${MYIMG}
 
