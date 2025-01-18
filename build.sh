@@ -7,7 +7,7 @@ cat << EOF
 $0 -v[ersion] -t[ag] -c[apture]
 
 where 
-  - Version: of Stata (17, 18, ...)
+  - Version: of Stata (17, 18, 18_5, ...) (can be omitted if set in _version.sh)
   - Tag: tag to give Docker image (typically date)
   - Capture: of the capture
   - h: this helpfile
@@ -15,6 +15,7 @@ EOF
 exit 2
 fi
 
+source ./_version.sh
 while getopts v:t:c: flag
 do
     case "${flag}" in
@@ -23,7 +24,6 @@ do
         c) CAPTURE=${OPTARG};;
     esac
 done
-VERSION=${VERSION:-18}
 [[ -z $TAG ]] && TAG=$(date +%F) 
 [[ -z $CAPTURE ]] && $0 -h
 
@@ -47,10 +47,12 @@ MYIMG=stata${VERSION}
 image=base
 DOCKER_BUILDKIT=1 docker build \
 	-f Dockerfile.base \
-	--build-arg VERSION=$VERSION  \
+	--build-arg STATA_VERSION=${VERSION%%_*}  \
+	--build-arg CAPTURE_VERSION=$VERSION \
 	--build-arg CAPTURE=$CAPTURE  \
 	. \
         -t $MYHUBID/${MYIMG}-base:$TAG
+
 
 # now build the functional command line versions
 
@@ -70,16 +72,19 @@ do
 	# Build the command line versions
 	DOCKER_BUILDKIT=1 docker build \
 		-f Dockerfile.${arg} \
-		--build-arg VERSION=${VERSION} \
+	        --build-arg STATA_VERSION=${VERSION%%_*}  \
+	        --build-arg CAPTURE_VERSION=$VERSION \
 	       	--build-arg TAG=${TAG} \
 	      	--build-arg CAPTURE=${CAPTURE} \
 	       	--build-arg TYPE=$arg \
 		. \
                 -t $MYHUBID/${MYIMG}-${arg}:$TAG
+    
 	# Build the interactive command line versions
 	DOCKER_BUILDKIT=1 docker build \
 		-f Dockerfile.${arg} \
-		--build-arg VERSION=${VERSION} \
+	        --build-arg STATA_VERSION=${VERSION%%_*}  \
+	        --build-arg CAPTURE_VERSION=$VERSION \
 	       	--build-arg TAG=${TAG} \
 	      	--build-arg CAPTURE=${CAPTURE} \
 	       	--build-arg TYPE=help \
@@ -89,7 +94,8 @@ do
 	# build the X versions - note: still no X libraries
 	DOCKER_BUILDKIT=1 docker build \
 		-f Dockerfile.x${arg} \
-		--build-arg VERSION=${VERSION} \
+	        --build-arg STATA_VERSION=${VERSION%%_*}  \
+	        --build-arg CAPTURE_VERSION=$VERSION \
 	       	--build-arg TAG=${TAG} \
 	      	--build-arg CAPTURE=${CAPTURE} \
 	       	--build-arg TYPE=x$arg \

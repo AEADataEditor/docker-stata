@@ -7,13 +7,14 @@ cat << EOF
 $0 -v[ersion] -t[ag] 
 
 where 
-  - Version: of Stata (17, 18, ...)
+  - Version: of Stata (17, 18, ...) (can be omitted if set in _version.sh)
   - Tag: tag to give Docker image (typically date)
   - h: this helpfile
 EOF
 exit 2
 fi
 
+source ./_version.sh
 while getopts v:t:c: flag
 do
     case "${flag}" in

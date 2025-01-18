@@ -6,7 +6,7 @@ then
 	exit 2
 fi
 
-VERSION=${VERSION:-18}
+VERSION=${VERSION:-18_5}
 TAG=${1:-2023-08-30}
 shift
 MYHUBID=dataeditors

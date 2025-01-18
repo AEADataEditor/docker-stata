@@ -3,14 +3,17 @@
 # this script captures an existing Stata install, updated as necessary
 
 # set locations
-[[ -z $1 ]] && VERSION=18 || VERSION=$1
+
+source ./_version.sh
+
+[[ -z $1 ]] || VERSION=$1
 TARLOC=bin-exclude
 TARBASE=$(pwd)/bin-exclude/stata-installed-$VERSION
 TARFILE=${TARBASE}.tgz
 VTARFILE=${TARBASE}-$(date +%F)
 TMP=/mnt/local/fast_home/$USER/tmp
 BUILD=$TMP/stata-build
-INSTALLED=usr/local/stata$VERSION
+INSTALLED=usr/local/stata${VERSION%%_*}
 
 # untar
 
@@ -22,7 +25,7 @@ if [[ -f $TARFILE ]]
 then
 	tar xzf $TARFILE && echo "Tar file unpacked." || exit 2
 	\rm -rf $BUILD/$INSTALLED/utilities/.old
-	[[ "$VERSION" == "17" || "$VERSION" == 18 ]] && \rm -rf $BUILD/$INSTALLED/utilities/java/linux-x64
+	[[ "$VERSION" == "17" || "$VERSION" == "18" || "$VERSION" == "18_5" ]] && \rm -rf $BUILD/$INSTALLED/utilities/java/linux-x64
 	printf "%20s " ""
 	echo "Ready for sync."
 else
