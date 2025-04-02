@@ -13,7 +13,7 @@ TARFILE=${TARBASE}.tgz
 VTARFILE=${TARBASE}-$(date +%F)
 TMP=/mnt/local/fast_home/$USER/tmp
 BUILD=$TMP/stata-build
-INSTALLED=usr/local/stata${VERSION%%_*}
+INSTALLED=usr/local/statanow${VERSION%%_*}
 
 # untar
 
