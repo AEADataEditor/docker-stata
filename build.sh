@@ -41,13 +41,22 @@ read
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
 
+# define STATA_VERSION
+
+if [[ "${VERSION}" == "${VERSION%%_*}" ]]
+then 
+	STATA_VERSION=${VERSION}
+else
+	STATA_VERSION=now${VERSION%%_*}
+fi
+
 # build all the images
 # Base: 
 
 image=base
 DOCKER_BUILDKIT=1 docker build \
 	-f Dockerfile.base \
-	--build-arg STATA_VERSION=${VERSION%%_*}  \
+	--build-arg STATA_VERSION=${STATA_VERSION}  \
 	--build-arg CAPTURE_VERSION=$VERSION \
 	--build-arg CAPTURE=$CAPTURE  \
 	. \
@@ -72,7 +81,7 @@ do
 	# Build the command line versions
 	DOCKER_BUILDKIT=1 docker build \
 		-f Dockerfile.${arg} \
-	        --build-arg STATA_VERSION=${VERSION%%_*}  \
+	        --build-arg STATA_VERSION=${STATA_VERSION}  \
 	        --build-arg CAPTURE_VERSION=$VERSION \
 	       	--build-arg TAG=${TAG} \
 	      	--build-arg CAPTURE=${CAPTURE} \
@@ -83,7 +92,7 @@ do
 	# Build the interactive command line versions
 	DOCKER_BUILDKIT=1 docker build \
 		-f Dockerfile.${arg} \
-	        --build-arg STATA_VERSION=${VERSION%%_*}  \
+	        --build-arg STATA_VERSION=${STATA_VERSION}  \
 	        --build-arg CAPTURE_VERSION=$VERSION \
 	       	--build-arg TAG=${TAG} \
 	      	--build-arg CAPTURE=${CAPTURE} \
@@ -94,7 +103,7 @@ do
 	# build the X versions - note: still no X libraries
 	DOCKER_BUILDKIT=1 docker build \
 		-f Dockerfile.x${arg} \
-	        --build-arg STATA_VERSION=${VERSION%%_*}  \
+	        --build-arg STATA_VERSION=${STATA_VERSION}  \
 	        --build-arg CAPTURE_VERSION=$VERSION \
 	       	--build-arg TAG=${TAG} \
 	      	--build-arg CAPTURE=${CAPTURE} \

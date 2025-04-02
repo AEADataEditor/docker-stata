@@ -2,7 +2,7 @@
 # First stage
 FROM ubuntu:22.04 as install
 # cheating for now
-ARG STATA_VERSION=18
+ARG STATA_VERSION=now18
 ARG CAPTURE_VERSION=18_5
 ARG CAPTURE=yyyy-mm-dd
 
