@@ -30,10 +30,21 @@ Unfortunately, it wasn't immediately clear which version was being updated. The 
 | `2024-10-16` | 18.5 | 16 Oct 2024 | |
 | `2024-12-18` | 18.5 | 18 Dec 2024 | |
 
+The latest (and last, see below) Stata 18 (not NOW) is 
 
-I will shortly restart the versioning of Stata 18 versions as well.
+| Tag | Stata version | `born_date` | Note |
+| --- | --- | --- | --- |
+| `2025-02-26` | 18 | February 26, 2025 | |
 
-Going forward, 
+
+## Splitting images for better manageability
+
+
+Going forward, I will be using the `split` Docker images. For Stata 18, this means that there will be multiple images, optimized for the intended use. See <https://hub.docker.com/r/dataeditors/stata18-base> for more information. An equivalent set of splits is available for Stata 18 Now (`18_5`).
+  
+
+
+## Legacy version
 
 - Stata 18 can be found at <https://hub.docker.com/r/dataeditors/stata18>
 - StataNow 18.5 can be found at <https://hub.docker.com/r/dataeditors/stata18now>
