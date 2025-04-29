@@ -4,9 +4,45 @@
 
 # set locations
 
-source ./_version.sh
 
-[[ -z $1 ]] || VERSION=$1
+if [[ -z $1 || "$1" == "-h" ]]
+then
+cat << EOF
+
+$0 -v[ersion] -t[ag] -c[apture]
+
+where 
+  - Version: of Stata (17, 18, 18_5, ...) (can be omitted if set in _version.sh)
+  - Capture: date of the capture (can be omitted if not overriding)
+  - h: this helpfile
+
+Note that Stata Now version numbers should be coded as '18_5', but will look in a directory called 'statanow18'.
+
+EOF
+exit 2
+fi
+
+source ./_version.sh
+while getopts v:t:c: flag
+do
+    case "${flag}" in
+        v) VERSION=${OPTARG};;
+        c) CAPTURE=${OPTARG};;
+    esac
+done
+
+[[ -z $CAPTURE ]] && CAPTURE=$(date +%F) 
+
+cat << EOF
+
+  VERSION: $VERSION
+  CAPTURE: $CAPTURE
+
+Ready? 
+
+EOF
+read
+
 TARLOC=bin-exclude
 TARBASE=$(pwd)/bin-exclude/stata-installed-$VERSION
 TARFILE=${TARBASE}.tgz
