@@ -24,6 +24,7 @@ do
 done
 VERSION=${VERSION:-18}
 [[ -z $TAG ]] && TAG=$(date +%F) 
+SHORTDESC="Docker image for Stata, to be used in automation and reproducibility."
 
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
@@ -42,7 +43,7 @@ case $answer in
    do
 	  docker push ${arg}:$TAG
 	  # also push the README - requires installation of docker-pushrm https://github.com/christian-korneck/docker-pushrm
-	  docker pushrm ${arg}
+	  docker pushrm ${arg} --short "$SHORTDESC" 
    done
    ;;
    *)
