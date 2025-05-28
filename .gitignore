@@ -4,3 +4,4 @@ stata.lic*
 Dockerfile.*
 *.history
 *.swp
+.env
