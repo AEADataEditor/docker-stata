@@ -49,28 +49,39 @@ TARFILE=${TARBASE}.tgz
 VTARFILE=${TARBASE}-$(date +%F)
 TMP=/mnt/local/fast_home/$USER/tmp
 BUILD=$TMP/stata-build
-INSTALLED=usr/local/statanow${VERSION%%_*}
-
+# Is this StataNow or regular?
+if [[ "$VERSION" == ${VERSION##*_} ]]
+then
+    # regular Stata
+    printf "%20s " "Stata version $VERSION"
+    INSTALLED=usr/local/stata${VERSION%%_*}
+else
+    # StataNow
+    printf "%20s " "StataNow version $VERSION"
+    INSTALLED=usr/local/statanow${VERSION}
+fi
 # untar
 
 printf "%20s " "Prepare build."
 [[ -d $BUILD ]] && \rm -rf $BUILD
 mkdir -p $BUILD
 cd $BUILD
-if [[ -f $TARFILE ]]
+# disable the re-use of tarfiles, but leave it here 
+if [[ -f xxxxx$TARFILE ]]
 then
 	tar xzf $TARFILE && echo "Tar file unpacked." || exit 2
 	\rm -rf $BUILD/$INSTALLED/utilities/.old
-	[[ "$VERSION" == "17" || "$VERSION" == "18" || "$VERSION" == "18_5" ]] && \rm -rf $BUILD/$INSTALLED/utilities/java/linux-x64
+	# Not functional
+  # [[ "$VERSION" == "17" || "$VERSION" == "18" || "$VERSION" == "18_5" ]] && \rm -rf $BUILD/$INSTALLED/utilities/java/linux-x64
 	printf "%20s " ""
 	echo "Ready for sync."
 else
 	echo "No previous version found"
 	mkdir -p $BUILD/$INSTALLED
+	echo "Ready for sync."
 fi
 echo "  $BUILD"
 
-# Figure out the latest java VERSION
 
 
 # sync
