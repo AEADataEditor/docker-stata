@@ -9,7 +9,7 @@ if [[ -z $1 || "$1" == "-h" ]]
 then
 cat << EOF
 
-$0 -v[ersion] -t[ag] -c[apture]
+$0 -v[ersion]  -c[apture]
 
 where 
   - Version: of Stata (17, 18, 18_5, ...) (can be omitted if set in _version.sh)
@@ -23,7 +23,7 @@ exit 2
 fi
 
 source ./_version.sh
-while getopts v:t:c: flag
+while getopts v:c: flag
 do
     case "${flag}" in
         v) VERSION=${OPTARG};;
@@ -54,11 +54,11 @@ if [[ "$VERSION" == ${VERSION##*_} ]]
 then
     # regular Stata
     printf "%20s " "Stata version $VERSION"
-    INSTALLED=usr/local/stata${VERSION%%_*}
+    INSTALLED=usr/local/statanow${VERSION}
 else
     # StataNow
     printf "%20s " "StataNow version $VERSION"
-    INSTALLED=usr/local/statanow${VERSION}
+    INSTALLED=usr/local/stata${VERSION%%_*}
 fi
 # untar
 
