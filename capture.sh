@@ -54,11 +54,11 @@ if [[ "$VERSION" == ${VERSION##*_} ]]
 then
     # regular Stata
     printf "%20s " "Stata version $VERSION"
-    INSTALLED=usr/local/statanow${VERSION}
+    INSTALLED=usr/local/stata${VERSION}
 else
     # StataNow
     printf "%20s " "StataNow version $VERSION"
-    INSTALLED=usr/local/stata${VERSION%%_*}
+    INSTALLED=usr/local/statanow${VERSION%%_*}
 fi
 # untar
 
