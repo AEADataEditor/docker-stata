@@ -5,3 +5,4 @@ Dockerfile.*
 *.history
 *.swp
 .env
+README-containers.md

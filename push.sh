@@ -25,9 +25,28 @@ done
 VERSION=${VERSION:-18}
 [[ -z $TAG ]] && TAG=$(date +%F) 
 SHORTDESC="Docker image for Stata, to be used in automation and reproducibility."
+TEMPLATE="README-containers.template.md"
+EXTRAMD="README-containers.$VERSION.md"
+OUTPUTMD="README-containers.md"
 
 MYHUBID=dataeditors
 MYIMG=stata${VERSION}
+
+# Generate README-containers.md from template
+if [[ -f "$TEMPLATE" ]]; then
+    # Extract base version (e.g., "19" from "19_5")
+    BASE_VERSION=$(echo "$VERSION" | cut -d'_' -f1)
+    
+    # Replace template placeholders
+    sed -e "s/{{ base_version }}/$BASE_VERSION/g" \
+        -e "s/{{ full_version }}/$VERSION/g" \
+        "$TEMPLATE" > "$OUTPUTMD"
+    
+    if [[ -f "$EXTRAMD" ]]; then
+        echo "" >> "$OUTPUTMD"
+        cat "$EXTRAMD" >> "$OUTPUTMD"
+    fi
+fi
 
 # build all the images
 # Base: 

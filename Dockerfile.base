@@ -1,9 +1,9 @@
 # syntax=docker/dockerfile:1.2
 # First stage
-FROM ubuntu:22.04 as install
+FROM ubuntu:24.04 as install
 # cheating for now
-ARG STATA_VERSION=now18
-ARG CAPTURE_VERSION=18_5
+ARG STATA_VERSION=now19
+ARG CAPTURE_VERSION=19_5
 ARG CAPTURE=yyyy-mm-dd
 
 COPY bin-exclude/stata-installed-${CAPTURE_VERSION}-${CAPTURE}-base.tgz /root/stata.tgz
@@ -16,22 +16,22 @@ RUN cd / && tar xzf $HOME/stata.tgz \
     && exit 2 || echo "Not found" 
 
 # Final build
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get upgrade -y  \
+    && DEBIAN_FRONTEND=noninteractive apt-get autoremove -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-         locales \
-         libncurses5 \
+         libncurses6 \
          libcurl4 \
-         libfontconfig1 \
          git \
          nano \
          unzip \
+         locales \
     && rm -rf /var/lib/apt/lists/* \
     && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 # Create a non-root user
-RUN groupadd -g 1000 stata \ 
-    && useradd -r -u 1000 -g stata statauser \
+RUN groupadd -g 2000 stata \ 
+    && useradd -r -u 2000 -g stata statauser \
     && mkdir -p /home/statauser \
     && chown statauser:stata /home/statauser
 

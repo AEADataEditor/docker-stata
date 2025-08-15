@@ -16,7 +16,7 @@ See [https://github.com/AEADataEditor/docker-stata](https://github.com/AEADataEd
 
 ## Structure
 
-The images are split into versions, flavors,  editions (types), and several components.
+The images are split into **versions**, **flavors**,  **editions** (types), and several **components**.
 
 ### Flavors
 
@@ -28,8 +28,16 @@ Stata comes in three editions: Basic Edition (`be`), Standard Edition (`se`), an
 
 ### Versions
 
-- The by-type images are available for Stata 18, 19. For (monolithic) images for earlier versions of Stata 18 and below, see <https://hub.docker.com/r/dataeditors/stata18>, <https://hub.docker.com/r/dataeditors/stata17>, etc.
+- The by-type images are available for Stata 18 and higher. For (monolithic) images for earlier versions of Stata 18 and below, 
+see
 
+- <https://hub.docker.com/r/dataeditors/stata18>
+- <https://hub.docker.com/r/dataeditors/stata17>
+- <https://hub.docker.com/r/dataeditors/stata16>
+- <https://hub.docker.com/r/dataeditors/stata15>
+- <https://hub.docker.com/r/dataeditors/stata14>
+- <https://hub.docker.com/r/dataeditors/stata13>
+- <https://hub.docker.com/r/dataeditors/stata12>
 
 ### Components
 
@@ -37,8 +45,8 @@ For compactness, the various versions, editions, and flavors are provided in sev
 
 The naming goes as `stata` 
 
-- followed by the version number (e.g., `18`)
-- followed by the release number separated by `_` if not zero (e.g., `18.0` = `18`, but `18.5` becomes `18_5`), 
+- followed by the version number (e.g., `{{ base_version }}`)
+- followed by the release number separated by `_` if not zero (e.g., `{{ base_version }}.0` = `{{ base_version }}`, but `{{ base_version }}.5` becomes `{{ base_version }}_5`), 
 - followed by the edition (`be`, `se`, `mp`), 
 - followed by the optional `-i` for interactive, or the optional `-x` for GUI.
 
@@ -48,7 +56,7 @@ The base image serves all other images, but is not useful on its own - it does n
 
 ```
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-dataeditors/stata18_5-base  test  90364eb9a9d9  9 minutes ago   795MB
+dataeditors/stata{{ full_version }}-base  test  90364eb9a9d9  9 minutes ago   795MB
 ```
 
 
@@ -61,9 +69,9 @@ These images have only the relevant command line binaries. They are fully functi
 
 ```
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-dataeditors/stata18_5-mp    test  4c1580c00abd  9 minutes ago   1.18GB
-dataeditors/stata18_5-se    test  662e2d09026e  9 minutes ago   1.12GB
-dataeditors/stata18_5-be    test  5f87e594ddbf  9 minutes ago   1.12GB
+dataeditors/stata{{ full_version }}-mp    test  4c1580c00abd  9 minutes ago   1.18GB
+dataeditors/stata{{ full_version }}-se    test  662e2d09026e  9 minutes ago   1.12GB
+dataeditors/stata{{ full_version }}-be    test  5f87e594ddbf  9 minutes ago   1.12GB
 ```
 
 #### Command line images for interactive development
@@ -73,9 +81,9 @@ These images have help files, and are suitable for interactive development, for 
 
 ```
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-dataeditors/stata18_5-mp-i  test  642e4a006672  9 minutes ago   1.41GB
-dataeditors/stata18_5-se-i  test  76786bda8680  9 minutes ago   1.32GB
-dataeditors/stata18_5-be-i  test  f5600d1fe84d  9 minutes ago   1.32GB
+dataeditors/stata{{ full_version }}-mp-i  test  642e4a006672  9 minutes ago   1.41GB
+dataeditors/stata{{ full_version }}-se-i  test  76786bda8680  9 minutes ago   1.32GB
+dataeditors/stata{{ full_version }}-be-i  test  f5600d1fe84d  9 minutes ago   1.32GB
 ```
 
 #### Interactive with GUI
@@ -85,9 +93,9 @@ The GUI (`X`) variants start with the `-i` variant, and add the `x` binaries. Th
 
 ```
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-dataeditors/stata18_5-mp-x  test  2fbc841cba25  9 minutes ago   1.92GB
-dataeditors/stata18_5-se-x  test  dedf75051503  9 minutes ago   1.76GB
-dataeditors/stata18_5-be-x  test  07b1b687e984  9 minutes ago   1.76GB
+dataeditors/stata{{ full_version }}-mp-x  test  2fbc841cba25  9 minutes ago   1.92GB
+dataeditors/stata{{ full_version }}-se-x  test  dedf75051503  9 minutes ago   1.76GB
+dataeditors/stata{{ full_version }}-be-x  test  07b1b687e984  9 minutes ago   1.76GB
 ```
 
 ## Accessing the images
