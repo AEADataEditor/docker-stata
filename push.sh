@@ -4,28 +4,31 @@ if [[ -z $1 || "$1" == "-h" ]]
 then
 cat << EOF
 
-$0 -v[ersion] -t[ag] 
+$0 -v[ersion] -t[ag] -e[arly]
 
 where 
   - Version: of Stata (17, 18, ...) (can be omitted if set in _version.sh)
   - Tag: tag to give Docker image (typically date)
+  - Early: use template README for early version of Stata 
   - h: this helpfile
 EOF
 exit 2
 fi
 
 source ./_version.sh
-while getopts v:t:c: flag
+while getopts v:t:c:r: flag
 do
     case "${flag}" in
         v) VERSION=${OPTARG};;
         t) TAG=${OPTARG};;
+        e) EARLY=1;;
     esac
 done
 VERSION=${VERSION:-18}
 [[ -z $TAG ]] && TAG=$(date +%F) 
 SHORTDESC="Docker image for Stata, to be used in automation and reproducibility."
 TEMPLATE="README-containers.template.md"
+[[ -n $EARLY ]] && TEMPLATE="README-containers.early.md"
 EXTRAMD="README-containers.$VERSION.md"
 OUTPUTMD="README-containers.md"
 
@@ -51,6 +54,12 @@ fi
 # build all the images
 # Base: 
 
+list=$(docker images | grep $TAG | grep ${MYIMG}- | awk ' { print $1 } ')
+
+if [[ -z $list ]]; then
+    echo "No images found for tag $TAG with prefix ${MYIMG}-"
+    exit 1
+fi
 echo "Ready to push? (y/N)"
 echo "  docker push  $MYHUBID/${MYIMG}:$TAG"
 echo " (will iterate across all images)"
@@ -58,7 +67,8 @@ docker images | grep $TAG | grep ${MYIMG}-
 read answer
 case $answer in 
    y|Y)
-   for arg in $(docker images | grep $TAG | grep ${MYIMG}- | awk ' { print $1 } ')
+   # iterate over all images in $list
+   for arg in $list
    do
 	  docker push ${arg}:$TAG
 	  # also push the README - requires installation of docker-pushrm https://github.com/christian-korneck/docker-pushrm

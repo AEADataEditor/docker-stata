@@ -32,12 +32,13 @@ Stata comes in three editions: Basic Edition (`be`), Standard Edition (`se`), an
 see
 
 - <https://hub.docker.com/r/dataeditors/stata18>
-- <https://hub.docker.com/r/dataeditors/stata17>
-- <https://hub.docker.com/r/dataeditors/stata16>
-- <https://hub.docker.com/r/dataeditors/stata15>
-- <https://hub.docker.com/r/dataeditors/stata14>
-- <https://hub.docker.com/r/dataeditors/stata13>
-- <https://hub.docker.com/r/dataeditors/stata12>
+- <https://hub.docker.com/r/dataeditors/stata17> (last update: 2024-05-21)
+- <https://hub.docker.com/r/dataeditors/stata16> (last update: 2023-06-13)
+- <https://hub.docker.com/r/dataeditors/stata15> (last update: 2023-01-27)
+- <https://hub.docker.com/r/dataeditors/stata14> (last update: 2021-06-02)
+- <https://hub.docker.com/r/dataeditors/stata13> (last update: 2021-06-02)
+- <https://hub.docker.com/r/dataeditors/stata12> (last update: 2021-07-30)
+- <https://hub.docker.com/r/dataeditors/stata11> (last update: 2022-10-14)
 
 ### Components
 
