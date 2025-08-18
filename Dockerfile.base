@@ -1,9 +1,9 @@
 # syntax=docker/dockerfile:1.2
 # First stage
-FROM ubuntu:24.04 as install
+FROM ubuntu:22.04 as install
 # cheating for now
-ARG STATA_VERSION=now19
-ARG CAPTURE_VERSION=19_5
+ARG STATA_VERSION=now18
+ARG CAPTURE_VERSION=18_5
 ARG CAPTURE=yyyy-mm-dd
 
 COPY bin-exclude/stata-installed-${CAPTURE_VERSION}-${CAPTURE}-base.tgz /root/stata.tgz
