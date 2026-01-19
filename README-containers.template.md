@@ -98,6 +98,17 @@ dataeditors/stata{{ full_version }}-se-x  test  dedf75051503  9 minutes ago   1.
 dataeditors/stata{{ full_version }}-be-x  test  07b1b687e984  9 minutes ago   1.76GB
 ```
 
+## Special features
+
+Containers have minimal additional Linux commands. If any are necessary, you will need to build your own image:
+
+| Command | Available since |
+|---------|-----------------|
+|git | |
+|nano | |
+|unzip | |
+|sudo | 2026-01-13 |
+
 ## Accessing the images
 
 You can browse all provided images at [https://hub.docker.com/u/dataeditors](https://hub.docker.com/u/dataeditors).
