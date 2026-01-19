@@ -22,7 +22,7 @@ if [[ -f $TARFILE ]]
 then
 	tar xzf $TARFILE && echo "Tar file unpacked." || exit 2
 	\rm -rf $BUILD/$INSTALLED/utilities/.old
-	[[ "$VERSION" == "17" || "$VERSION" == 18 ]] && \rm -rf $BUILD/$INSTALLED/utilities/java/linux-x64
+	#[[ "$VERSION" == "17" || "$VERSION" == 18 ]] && \rm -rf $BUILD/$INSTALLED/utilities/java/linux-x64
 	printf "%20s " ""
 	echo "Ready for sync."
 else
