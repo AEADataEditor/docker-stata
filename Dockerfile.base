@@ -28,13 +28,16 @@ RUN apt-get update \
          unzip \
          locales \
          fontconfig fonts-dejavu-core fonts-dejavu-extra \
-         fonts-liberation  \
+         fonts-liberation \
+         sudo \
     && rm -rf /var/lib/apt/lists/* \
     && fc-cache -fv \
     && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 # Create a non-root user
 RUN groupadd -g 2025 stata \ 
-    && useradd  -m -u 2000 -g users -G stata statauser 
+    && useradd  -m -u 2000 -g users -G stata,sudo statauser \
+    && echo "statauser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/statauser \
+    && chmod 0440 /etc/sudoers.d/statauser 
 
 # Set a few more things
 ENV LANG en_US.utf8
