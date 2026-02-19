@@ -1,0 +1,29 @@
+# syntax=docker/dockerfile:1.2
+# Add Python support to Stata images
+# This should be built on top of the -i (interactive) images
+
+ARG STATA_VERSION
+ARG CAPTURE_VERSION
+ARG TYPE=unknown
+ARG TAG=latest
+
+FROM dataeditors/stata${CAPTURE_VERSION}-${TYPE}-i:$TAG
+
+USER root
+
+# Install Python 3 and pip
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+         python3 \
+         python3-pip \
+         python3-venv \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create a symbolic link for python (optional, for convenience)
+RUN ln -s /usr/bin/python3 /usr/bin/python || true
+
+# Set default user back to statauser
+USER statauser
+
+# Keep the same entrypoint as the base image
+ENTRYPOINT ["stata-mp"]
