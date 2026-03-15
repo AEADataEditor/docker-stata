@@ -21,5 +21,5 @@ RUN cd / && tar xzf $HOME/stata.tgz \
     && rm $HOME/stata.tgz
 
 # set default user and entrypoint
-USER statauser:stata
+USER statauser
 ENTRYPOINT ["stata-mp"]

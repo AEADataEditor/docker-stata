@@ -112,7 +112,16 @@ do
 		. \
                 -t $MYHUBID/${MYIMG}-${arg}-x:$TAG
 
-
+	# Build Python-enabled versions based on the -i images
+	sed "s+stata-mp+${cmd}+" Dockerfile.python > Dockerfile.${arg}-python
+	DOCKER_BUILDKIT=1 docker build \
+		-f Dockerfile.${arg}-python \
+	        --build-arg STATA_VERSION=${STATA_VERSION}  \
+	        --build-arg CAPTURE_VERSION=$VERSION \
+	       	--build-arg TAG=${TAG} \
+	      	--build-arg TYPE=$arg \
+		. \
+                -t $MYHUBID/${MYIMG}-${arg}-i-python:$TAG
 
 
 done
