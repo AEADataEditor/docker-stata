@@ -49,6 +49,7 @@ The naming goes as `stata`
 - followed by the release number separated by `_` if not zero (e.g., `{{ base_version }}.0` = `{{ base_version }}`, but `{{ base_version }}.5` becomes `{{ base_version }}_5`), 
 - followed by the edition (`be`, `se`, `mp`), 
 - followed by the optional `-i` for interactive, or the optional `-x` for GUI.
+- for some images, followed by the optional `-python` for Python support.
 
 #### Base image
 
@@ -80,15 +81,27 @@ These images have help files, and are suitable for interactive development, for 
 
 
 ```
-REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+REPOSITORY                  TAG   IMAGE ID      CREATED         SIZE
 dataeditors/stata{{ full_version }}-mp-i  test  642e4a006672  9 minutes ago   1.41GB
 dataeditors/stata{{ full_version }}-se-i  test  76786bda8680  9 minutes ago   1.32GB
 dataeditors/stata{{ full_version }}-be-i  test  f5600d1fe84d  9 minutes ago   1.32GB
 ```
 
+
+#### Same as above, with Python installed
+
+For select interactive images, a version is installed with Python support. These images have the `-python` suffix. They are substantially larger than the non-Python versions. Please let us know if you run into issues.
+
+```
+REPOSITORY                          TAG   IMAGE ID      CREATED         SIZE
+dataeditors/stata{{ full_version }}-mp-i-python  2026-02-18  555452384561   3 weeks ago      2.04GB
+dataeditors/stata{{ full_version }}-se-i-python  2026-02-18  17745f15fdf1   3 weeks ago      1.95GB
+dataeditors/stata{{ full_version }}-be-i-python  2026-02-18  db2b73f72f1b   3 weeks ago      1.95GB
+```
+
 #### Interactive with GUI
 
-The GUI (`X`) variants start with the `-i` variant, and add the `x` binaries. They are complete, but the container is NOT COMPLETE and will not work without additional installation of X11 libraries. If you do not know what I'm talking about do not use them AT ALL. If you do, then use these images in the `FROM` statement of a Dockerfile or Singularity image, then add all the necessary libraries.
+The GUI (`X`) variants start with the `-i` variant, and add the `x` binaries. They are complete, but the container is **NOT COMPLETE** and will not work without additional installation of X11 libraries. If you do not know what I'm talking about do not use them **AT ALL**. If you do, then use these images in the `FROM` statement of a Dockerfile or Singularity image, then add all the necessary libraries.
 
 
 ```
