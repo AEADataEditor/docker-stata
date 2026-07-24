@@ -54,7 +54,7 @@ fi
 # build all the images
 # Base: 
 
-list=$(docker images | grep $TAG | grep ${MYIMG}- | awk ' { print $1 } ')
+list=$(docker images --format '{{.Repository}}' --filter "reference=*/${MYIMG}-*:${TAG}")
 
 if [[ -z $list ]]; then
     echo "No images found for tag $TAG with prefix ${MYIMG}-"
@@ -63,7 +63,7 @@ fi
 echo "Ready to push? (y/N)"
 echo "  docker push  $MYHUBID/${MYIMG}:$TAG"
 echo " (will iterate across all images)"
-docker images | grep $TAG | grep ${MYIMG}- 
+docker images --format '{{.Repository}}:{{.Tag}}' --filter "reference=*/${MYIMG}-*:${TAG}"
 read answer
 case $answer in 
    y|Y)
