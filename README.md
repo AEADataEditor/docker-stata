@@ -114,6 +114,17 @@ dataeditors/stata18-be    test  5f87e594ddbf  9 minutes ago   1.12GB
 dataeditors/stata18-base  test  90364eb9a9d9  9 minutes ago   795MB
 ```
 
+## Test the image
+
+`tests/run-tests.sh -i <image>` smoke-tests a built image. The shared-library
+checks need no license; the checks that run Stata code (do-file, graph export,
+PyStata) require a license file passed with `-l <stata.lic>`. See
+[`tests/README.md`](tests/README.md).
+
+```
+tests/run-tests.sh -i dataeditors/stata18-mp:2026-06-02 -l /path/to/stata.lic
+```
+
 ## Publish the image 
 
 The resulting docker image(s) can be uploaded to [Docker Hub](https://hub.docker.com/), if desired, or any other of the container registries. 
