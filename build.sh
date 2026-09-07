@@ -44,14 +44,50 @@ MYIMG=stata${VERSION}
 # define STATA_VERSION
 
 if [[ "${VERSION}" == "${VERSION%%_*}" ]]
-then 
+then
 	STATA_VERSION=${VERSION}
 else
 	STATA_VERSION=now${VERSION%%_*}
 fi
 
+# Guards (see issue #32). This is the stata18 / stata18_5 branch: Dockerfile.base
+# is pinned to ubuntu:22.04 so that Stata <= 18.5 gets libncurses5 / libtinfo.so.5.
+STATA_MAJOR=${VERSION%%_*}
+BASE_UBUNTU=$(grep -oE 'ubuntu:[0-9]+\.[0-9]+' Dockerfile.base | head -1 | cut -d: -f2)
+if [[ "$STATA_MAJOR" =~ ^[0-9]+$ ]]; then
+	# Stata >= 19 uses the ncurses6 ABI and current package sets: build it from main.
+	if (( STATA_MAJOR >= 19 )); then
+		cat >&2 <<EOF
+
+ERROR: Refusing to build Stata ${VERSION} from the stata18 / stata18_5 branch.
+
+  This branch is maintained for Stata <= 18.5 only (Ubuntu 22.04 base).
+  Build Stata 19 and later from main:
+    git switch main
+
+EOF
+		exit 1
+	fi
+	# Stata <= 18.5 binaries link libtinfo.so.5, dropped after Ubuntu 22.04.
+	if (( STATA_MAJOR <= 18 )) && [[ -n "$BASE_UBUNTU" ]] && (( ${BASE_UBUNTU//./} > 2204 )); then
+		cat >&2 <<EOF
+
+ERROR: Refusing to build Stata ${VERSION}.
+
+  Dockerfile.base is based on Ubuntu ${BASE_UBUNTU}, but Stata <= 18.5 binaries
+  are linked against the ncurses5 ABI (libtinfo.so.5 / libncurses.so.5), which
+  is not available after Ubuntu 22.04. Images built this way fail at runtime with:
+    stata-mp: error while loading shared libraries: libtinfo.so.5
+
+  Pin Dockerfile.base back to 'FROM ubuntu:22.04' + 'libncurses5'.
+
+EOF
+		exit 1
+	fi
+fi
+
 # build all the images
-# Base: 
+# Base:
 
 image=base
 DOCKER_BUILDKIT=1 docker build \
